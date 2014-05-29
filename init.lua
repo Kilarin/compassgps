@@ -782,7 +782,10 @@ function compassgps.get_compassgps_formspec(name)
 
 
   --check to see if the player has teleport privliges
-  local player_privs = core.get_player_privs(name)
+  local player_privs
+  if core then player_privs = core.get_player_privs(name)
+  else player_privs = minetest.get_player_privs(name)
+  end
   local telepriv=false
   if player_privs["teleport"] then
     telepriv=true
