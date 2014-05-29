@@ -1,6 +1,4 @@
 compassgps
-Original mods by Echo, PilzAdam, and TeTpaAka
-Current changes by Kilarin (Donald Hines) 
 
 Echo created a compass mod back in 2012: https://forum.minetest.net/viewtopic.php?id=3785
 PilzAdams made a modification of it, which I can not find the source to, I don't know how much of PilzAdams changes made it into the later versions of Echo's mod.
@@ -11,34 +9,34 @@ This is my fork of TeTpaAka's fork of Echo's mod. :)
 
 The compass mod as it was is REALLY cool  I love the way Echo managed to make the compass in your inventory actually change it's image to point in the direction of it's target
 
-[IMG]http://i59.tinypic.com/a15ls0.png[/IMG]
+[img]http://i59.tinypic.com/a15ls0.png[/img]
 
 And TeTpaAka's gui, file io, and coding for multiplayer games was simply amazing.  But as I was learning from their awesome code, I saw some changes I'd like to make using these new ideas, as well as some things I learned while looking at other mods.  So, with complete and total respect for the original awesome mods, and hopefully in the same spirit as theirs, I present my own fork of the fork.  CompassGPS
 
 The crafting recipe for a compass is unchanged:
 
-[IMG]http://i59.tinypic.com/14ad2qw.png[/IMG]
+[img]http://i59.tinypic.com/14ad2qw.png[/img]
 
 Compass GPS introduces several other changes though.  First of all, this mod adds a heads up display that indicates your current position, and the name of the bookmark the compass is pointing at, that bookmarks pos, as well as the distance to that bookmark.
 
-[IMG]http://i60.tinypic.com/facwea.png[/IMG]
+[img]http://i60.tinypic.com/facwea.png[/img]
 
 The hud updates constantly as long as the compass is in one of your active inventory slots, so you can always know where you are in relation to the target node, and how far away it is.
 
 There is a GUI that pops up whenever you wield the compass and left click.  I never played with a GUI in minetest before, so this was a new experience for me, I learned a lot and made quite a few changes:
 
-[IMG]http://i59.tinypic.com/210bxvt.png[/IMG]
+[img]http://i59.tinypic.com/210bxvt.png[/img]
 
-The bookmark list has been expanded from a dropdown into a textlist to improve visibility.  Select any bookmark in the list by clicking on it, and then click "Find Selected Bookmark" to make the compass (and hud) point at that location.  "default" is always at the top of the list and will point to (0,0,0) or your bed from PilzAdams bed-mod, or home location as defined in the sethome-mod.  (Setting default to your bed or sethome is old code, I cant take credit for that)  The rest of the list are bookmarked locations that you have set and named
+The bookmark list has been expanded from a dropdown into a textlist to improve visibility.  Select any bookmark in the list by clicking on it, and then click "Find Selected Bookmark" to make the compass (and hud) point at that location.  "default" is always at the top of the list and will point to (0,0,0) or your bed from PilzAdams bed-mod, or home location as defined in the sethome-mod.  (Setting default to your bed or sethome is old code, I modified it to make it work with my new version, but I cant take credit for the idea or basic structure.)  The rest of the list are bookmarked locations that you have set and named
 
 Just click in the "Sort by" box to change whether the bookmarks are sorted by name, or by distance from your current location.  ("default" will still always be the first item in the list no matter which way you sort it)
 
 Click in the "Dist" box to change whether the distance is calculated in 3d (including your distance in the vertical direction) or in 2d (x and z coords only, ignore vertical distance)
 
 I figured the position of the hud text was likely to be something that people would want to customize, so right there in the gui are the x and y coords for the hud text.  Just enter the new coords where you want the hud text to appear and click "Change Hud Pos"
-The cords must be between 0 and 1 and represent a percentage of the screen, so x=0 would put the text at the far left of the screen, and y=0.98 would put the next almost at the bottom of the screen.  The default is x=0.4 and y=0.01, and that is displayed right over the input boxes so the user can easily set them back to the default if they are having trouble placing the hud. If you change either the x or y coord to a number that is out of range (less than 0 or greater than 1) then the hud will not be displayed.  That makes it easy to turn the hud off if you wish.
+The cords must be between 0 and 1 and represent a percentage of the screen, so x=0 would put the text at the far left of the screen, and y=0.98 would put the text almost at the bottom of the screen.  The default is x=0.4 and y=0.01, and that is displayed right over the input boxes so the user can easily set them back to the default if they are having trouble placing the hud. If you change either the x or y coord to a number that is out of range (less than 0 or greater than 1) then the hud will not be displayed.  That makes it easy to turn the hud off if you wish.
 
-Down at the lower right of the screen, I'm certain you noticed the "Teleport to bookmark" button.  That button appears if, and ONLY IF the player has teleport priveleges.  If they do, then they can select any bookmark out of the list, click on teleport, and be instantly transported to the location of that bookmark.  Since the user already had teleport priveleges, this just saved them some typing, it's not adding any new abilities.
+Down at the lower right of the screen, I'm certain you noticed the "Teleport to bookmark" button.  That button appears if, and ONLY IF the player has teleport privileges.  If they do, then they can select any bookmark out of the list, click on teleport, and be instantly transported to the location of that bookmark.  Since the user already had teleport privileges, this just saved them some typing, it's not adding any new abilities.
 
 The bookmark list is saved any time a user changes it.  All of your other settings, the currently selected bookmark, sort order, distance function, and hud position, are saved whenever a user leaves the game, and on game shutdown.  so if you move the hud down to the lower right hand corner of the screen, and then quit, the hud will still be in the place you put it when you restart the game later.
 
@@ -48,24 +46,25 @@ I tried to follow Echo and TeTpaAka's examples of how to properly code for multi
 
 The code is kinda a mess, because I was learning a lot of new things while working on it.  I hope to do a clean up on it sometime in the near future, but I wanted to release it now so some people could start testing it.  Please do not hesitate to offer critiques, criticism, or coding advice.  I'm new to lua and minetest and could use the help.  
 
-Credits:
+[b]Credits:[/b]
 Original mod is by Echo and TeTpaAka, and probably PilzAdam.  Cactuz_pl clockmod showed me how to write the hud to the screen.  My son offered a lot of advice and suggested several changes.  I got an example of how to sort lists in lua from Michal Kottman on StackOverflow
 
-License:
+[b]License:[/b]
 Original code by Echo, PilzAdam, and TeTpaAka is WTFPL.  My changes are CC0 (No rights reserved)
 textures: CC BY-SA by Echo
 
-Dependencies:
+[b]Dependencies:[/b]
 default is the only requirement.
 PilzAdams Beds mod and the sethome-mod are supported if you have them.
 
-github source:
+[b]Incompatibilities:[/b]
+This mod will clash with both the original compass and compass+ mods.  They should not be installed and enabled at the same time as compassgps.  HOWEVER, compassgps is 100% compatible with the bookmarks file from the compass+ mod.  So if you were using compass+ and switch to compassgps you will NOT lose your previous bookmarks.
+
+[b]github source:[/b]
 https://github.com/Kilarin/compassgps
 
-Download:
+[b]Download:[/b]
 https://github.com/Kilarin/compassgps/archive/master.zip
 
-To install:
+[b]To install:[/b]
 Simply unzip the file into your mods folder, then rename the resulting folder from compassgps-master to compassgps
-
-
