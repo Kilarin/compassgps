@@ -1,3 +1,5 @@
+--compassgps 1.2
+
 --fixed bug that caused compass to jump around in inventory
 --fixed bug causing removed bookmarks not to be saved
 --expanded bookmark list from dropdown to textlist
@@ -287,11 +289,7 @@ function compassgps.set_bookmark(name, param)
 	end
 	local pos = player:getpos()
   --we are marking a NODE, no need to keep all those fractions
-  pos=compassgps.trunc_pos(pos)
-  --pos.x=compassgps.trunc(pos.x)
-  --pos.y=compassgps.trunc(pos.y+0.5)
-  ----for y, height 20.5 should return 21, height -20.5 should return 20
-  --pos.z=compassgps.trunc(pos.z)
+  pos=compassgps.round_pos(pos)
 
   --remove dangerous characters that will mess up the bookmark
   --the file can handle these fine, but the LIST for the textlist
@@ -330,6 +328,7 @@ minetest.register_chatcommand("set_bookmark", {
 })
 
 
+--[
 --truncates a number
 function compassgps.trunc(num)
 	if num >= 0 then return math.floor(num)
@@ -346,6 +345,17 @@ function compassgps.trunc_pos(pos)
   pos.z=compassgps.trunc(pos.z)
   return pos
 end --trunc_pos
+--]
+
+--returns a pos that is rounded special case.  round 0 digits for X and Z,
+--round 1 digit for Y
+function compassgps.round_pos(pos)
+  pos.x=compassgps.round_digits(pos.x,0)
+  pos.y=compassgps.round_digits(pos.y,1)
+  pos.z=compassgps.round_digits(pos.z,0)
+  return pos
+end --round_pos
+
 
 
 function compassgps.round_digits(num,digits)
@@ -361,12 +371,12 @@ end --round_digits_vector
 
 
 --because built in pos_to_string doesn't handle nil, and commas mess up textlist
---this truncates same rules as for setting bookmark or teleporting
+--this rounds same rules as for setting bookmark or teleporting
 --that way what you see in the hud matches where you teleport or bookmark
 function compassgps.pos_to_string(pos)
 	if pos==nil then return "(nil)"
 	else
-    pos=compassgps.trunc_pos(pos)
+    pos=compassgps.round_pos(pos)
     return "("..pos.x.." "..pos.y.." "..pos.z..")"
 	end --pos==nill
 end --pos_to_string

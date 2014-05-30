@@ -1,4 +1,4 @@
-compassgps
+compassgps 1.2
 
 Echo created a compass mod back in 2012: https://forum.minetest.net/viewtopic.php?id=3785
 PilzAdams made a modification of it, which I can not find the source to, I don't know how much of PilzAdams changes made it into the later versions of Echo's mod.
@@ -40,11 +40,11 @@ Down at the lower right of the screen, I'm certain you noticed the "Teleport to 
 
 The bookmark list is saved any time a user changes it.  All of your other settings, the currently selected bookmark, sort order, distance function, and hud position, are saved whenever a user leaves the game, and on game shutdown.  so if you move the hud down to the lower right hand corner of the screen, and then quit, the hud will still be in the place you put it when you restart the game later.
 
-I also fixed a few bugs while I was working on this.  There was a problem in the mod that caused compass to jump around in inventory if there were empty slots above it, that is fixed now.  And there was also a problem with the bookmark list not being saved after you removed a bookmark if you didn't add a new bookmark afterwards.  Now the bookmark list is modified whenever you change it, either adding or removing.
+I also fixed a few bugs while I was working on this.  There was a problem in the mod that caused compass to jump around in inventory if there were empty slots above it, that is fixed now.  And there was also a problem with the bookmark list not being saved after you removed a bookmark if you didn't add a new bookmark afterwards.  Now the bookmark list is saved whenever you change it, either adding or removing.
 
 I tried to follow Echo and TeTpaAka's examples of how to properly code for multiplayer games, and I think all of the new settings should work just fine in a multiplayer game.  If anyone tests this on a server, please let me know how it works.
 
-The code is kinda a mess, because I was learning a lot of new things while working on it.  I hope to do a clean up on it sometime in the near future, but I wanted to release it now so some people could start testing it.  Please do not hesitate to offer critiques, criticism, or coding advice.  I'm new to lua and minetest and could use the help.  
+The code is kinda a mess, because I was learning a lot of new things while working on it.  I hope to do a clean up on it sometime in the near future, but I wanted to release it now so some people could start testing it.  Please do not hesitate to offer critiques, criticism, or coding advice.  I'm new to lua and minetest and could use the help.
 
 [b]Credits:[/b]
 Original mod is by Echo and TeTpaAka, and probably PilzAdam.  Cactuz_pl clockmod showed me how to write the hud to the screen.  My son offered a lot of advice and suggested several changes.  I got an example of how to sort lists in lua from Michal Kottman on StackOverflow
