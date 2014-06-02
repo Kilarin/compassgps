@@ -7,6 +7,13 @@
 --added hud showing current pos -> target pos : distance
 
 
+local hud_default_x=0.4
+local hud_default_y=0.01
+local hud_default_color="FFFF00"
+local compass_default_type="a"
+local compass_valid_types={"a","b","c"}
+
+
 local compassgps = { }
 
 local activewidth=8 --until I can find some way to get it from minetest
@@ -28,6 +35,10 @@ local point_name = {}
 local sort_function = {}
 local distance_function ={}
 local hud_pos = {}
+local hud_color = {}
+local compass_type = {}
+
+--local remove
 
 
 --the sort functions and distance functions have to be defined ABOVE the
@@ -104,12 +115,17 @@ for name,stng in pairs(settings) do
   if settings[name].hud_pos then
     hud_pos[name]=settings[name].hud_pos
   end
+  if settings[name].hud_color then 
+    hud_color[name]=settings[name].hud_color
+  end  
+  if settings[name].compass_type then
+    compass_type[name]=settings[name].compass_type
+  end 
 end --for
 
 
 local textlist_clicked = {}
-local hud_default_x=0.4
-local hud_default_y=0.01
+
 
 
 function compassgps.bookmark_from_idx(name,idx)
@@ -137,16 +153,17 @@ end --bookmark_from_idx
 
 
 
-
---function compassgps.get_confirm_formspec(name,bkmrk)
---  print("get_confirm_formspec")
---	return "compassgps:confirm", "size[8,8;]"..
---		--"field[0,0.2;5,1;confirm_bookmarkname;Remove "..bkmark.."?;]"..
---    "field[0,0.2;7,1;confirm_bookmarkname;Remove selected bookmark?;]"..
---		"button[0,0.7;4,1;confirm_yes;Yes]"..
---    "button[4,0.7;4,1;confirm_no;No]"
---end
-
+--[
+function compassgps.get_confirm_formspec(name,bkmrk)
+  print("get_confirm_remove_formspec")
+	return "compassgps:confirm_remove", "size[8,4;]"..
+		--"field[0,0.2;5,1;confirm_bookmarkname;Remove "..bkmark.."?;]"..
+    --"field[0,0.2;7,1;confirm_bookmarkname;Remove selected bookmark?;]"..
+    "label[0,0.2;Remove bookmark: "..bkmark.." ?]"..
+		"button[0,0.7;4,1;confirm_yes;Yes]"..
+    "button[4,0.7;4,1;confirm_no;No]"
+end
+--]
 
 
 minetest.register_on_player_receive_fields(function(player,formname,fields)
@@ -167,7 +184,7 @@ minetest.register_on_player_receive_fields(function(player,formname,fields)
       or ( (fields["bookmark"]) and (fields["bookmark"]~="")   --bookmark field not blank
           and (not fields["remove_bookmark"]) and (not fields["find_bookmark"])
           and (not fields["bookmark_list"]) and (not fields["sort_type"])
-          and (not fields["distance_type"]) and (not fields["hud_pos"])
+          and (not fields["distance_type"]) and (not fields["settings"]) --and (not fields["hud_pos"])
           and (not fields["teleport"]) )
       then
 			compassgps.set_bookmark(name, fields["bookmark"])
@@ -179,7 +196,8 @@ minetest.register_on_player_receive_fields(function(player,formname,fields)
   	  --	"button[4,0.7;4,1;remove_no;No]")
       --minetest.show_formspec(name,compassgps.get_confirm_formspec(name,textlist_clicked[name]))
       --seems you can reshow THIS formspec, but not pop up another
-      compassgps.remove_bookmark(name, textlist_clicked[name])
+      --minetest.show_formspec(name, compassgps.get_confirm_formspec(name,"test"))
+      compassgps.remove_bookmark(name, textlist_clicked[name])      
   		minetest.show_formspec(name, compassgps.get_compassgps_formspec(name))
     elseif fields["find_bookmark"] and textlist_clicked[name] then
       --if fields["bookmark_list"] then
@@ -214,7 +232,12 @@ minetest.register_on_player_receive_fields(function(player,formname,fields)
     elseif fields["teleport"] then
    		-- Teleport player.
       compassgps.teleport_bookmark(name, textlist_clicked[name])
-    elseif fields["hud_pos"] and fields["hudx"] and fields["hudy"] then
+    elseif fields["settings"] then
+      --bring up settings screen
+      minetest.show_formspec(name, compassgps.get_settings_formspec(name))        
+		end --compassgps formspec
+  elseif (name ~= "" and formname == "compassgps:settings") then  
+    if fields["hud_pos"] then --and fields["hudx"] and fields["hudy"] then
       --minetest.chat_send_all("hud_pos triggered")
       if tonumber(fields["hudx"]) and tonumber(fields["hudy"]) then
         hud_pos[name].x=fields["hudx"]
@@ -226,8 +249,20 @@ minetest.register_on_player_receive_fields(function(player,formname,fields)
         end
       else --not numbers
         minetest.chat_send_player(name,"compassgps: hud coords are not numeric.  Change to between 0 and 1")
-      end --if numbers
-		end
+      end --if x,y valid    
+      if tonumber(fields["hudcolor"],16) then
+        hud_color[name]=fields["hudcolor"]
+      else
+        mintest.chat_send_player(name,"compassgps: hud color not valid hex number")
+      end --if color valid      
+    elseif fields["compass_type_a"] then      
+      compass_type[name]="a"
+    elseif fields["compass_type_b"] then
+      compass_type[name]="b"
+      print("compass_type b triggered compass_type[name]="..compass_type[name])      
+    elseif fields["compass_type_c"] then
+      compass_type[name]="c"      
+    end --  
 	end
 end)
 
@@ -264,7 +299,9 @@ function compassgps.write_settings()
                     point_name=point_name[name],
                     hud_pos=hud_pos[name],
                     sort_function=sort_short,
-                    distance_function=dist_short}
+                    distance_function=dist_short,
+                    hud_color=hud_color[name],
+                    compass_type=compass_type[name]}                   
 	end
   --now write to file
 	local file = io.open(minetest.get_worldpath().."/compassgps_settings", "w")
@@ -542,6 +579,22 @@ function read_spawns()
 end
 
 
+function compassgps.compass_type_name(playername,imagenum,ctypein)  
+  local ctype="a"
+  if ctypein then
+    ctype=ctypein
+  end    
+  if playername~="" and compass_type[playername] then 
+    ctype=compass_type[playername]
+  end
+  if ctype=="a" then
+    ctype=""
+  end  
+  --print("compass type name return "..ctype..imagenum)  
+  return ctype..imagenum
+end
+
+
 function compassgps.get_default_pos_and_name(name)
 	-- try to get position from PilzAdams bed-mod spawn
 	local pos = pilzadams_spawns[name]
@@ -589,8 +642,6 @@ minetest.register_globalstep(function(dtime)
         --problem being that arrays are not sorted in lua
 				for i,stack in ipairs(player:get_inventory():get_list("main")) do
 					if i<=activewidth and string.sub(stack:get_name(), 0, 11) == "compassgps:" then
-						--player:get_inventory():remove_item("main", stack:get_name())
-						--player:get_inventory():add_item("main", "compassgps:"..compass_image)
             activeinv=stack  --store the stack so we can update it later with new image
             stackidx=i --store the index so we can add image at correct location
             gotacompass=true
@@ -619,10 +670,13 @@ minetest.register_globalstep(function(dtime)
 
       --update compass image to point at target
   		if wielded then
-      	player:set_wielded_item("compassgps:"..compass_image)
-  		elseif activeinv then
+      	--player:set_wielded_item("compassgps:"..compass_image)
+        player:set_wielded_item("compassgps:"..
+            compassgps.compass_type_name(name,compass_image))
+      elseif activeinv then
 				player:get_inventory():remove_item("main", activeinv:get_name())
-        player:get_inventory():set_stack("main",stackidx,"compassgps:"..compass_image)
+        player:get_inventory():set_stack("main",stackidx,"compassgps:"..
+            compassgps.compass_type_name(name,compass_image))
       end --if wielded elsif activin
 
 
@@ -638,8 +692,23 @@ minetest.register_globalstep(function(dtime)
         hudx=tonumber(hud_pos[name].x)
         hudy=tonumber(hud_pos[name].y)
       else
-        hud_pos[name]={x=hud_default_x, y=hud_default_y}
+        hud_pos[name]={x=hud_default_x, y=hud_default_y}      
       end
+
+      local hudcolor=tonumber(hud_default_color, 16)
+      if hud_color[name] then
+        hudcolor=tonumber(hud_color[name], 16)
+      else  
+        hud_color[name]=hud_default_color
+      end
+      
+      local compasstype=compass_default_type
+      if compass_type[name] and
+         (compass_type[name]=="a" or compass_type[name]=="b" or compass_type[name]=="c") then
+        compasstype=compass_type[name]
+      else
+        compass_type[name]=compass_default_type
+      end  
 
       local h=nil
       if hudx>=0 and hudx<=1 and hudy>=0 and hudy<=1 then
@@ -651,7 +720,8 @@ minetest.register_globalstep(function(dtime)
           text = compassgps.pos_to_string(pos).." -> "..point_name[name]..
                  " "..compassgps.pos_to_string(spawn).." : "..
                  compassgps.round_digits(distance_function[name](pos,spawn),2);
-          number = 0xFFFF00;
+          --number = 0xFFFF00;
+          number = hudcolor;
       		scale = 20;
           });
         end --if x and y in range
@@ -671,20 +741,6 @@ end) -- register_globalstep
 
 
 
-local images = {
-	"compass_0.png",
-	"compass_1.png",
-	"compass_2.png",
-	"compass_3.png",
-	"compass_4.png",
-	"compass_5.png",
-	"compass_6.png",
-	"compass_7.png",
-	"compass_8.png",
-	"compass_9.png",
-	"compass_10.png",
-	"compass_11.png",
-}
 
 
 
@@ -767,7 +823,6 @@ function compassgps.get_compassgps_formspec(name)
     distance_function[name]=compassgps.distance3d
   end
 
-
   --textlist triggers register_on_recieve_fields whenever you click on an item in
   --the list, but returns nil if you check it after a button is clicked.
   --so we use textlist_clicked[name] to store the currently selected item in the
@@ -790,7 +845,6 @@ function compassgps.get_compassgps_formspec(name)
 		end
 	end
 
-
   --check to see if the player has teleport privliges
   local player_privs
   if core then player_privs = core.get_player_privs(name)
@@ -801,19 +855,15 @@ function compassgps.get_compassgps_formspec(name)
     telepriv=true
   end
 
-
-
 	return "compassgps:bookmarks", "size[9,10;]"..
 		"field[0,0.2;5,1;bookmark;bookmark:;]"..
+    "button[5.5,0;2.25,0.8;settings;Settings]"..
 		"button[0,0.7;4,1;new_bookmark;create bookmark]"..
     "button[4,0.7;4,1;remove_bookmark;remove bookmark]"..
     "label[0,1.75;Sort by:]"..
     "textlist[1,1.75;1.2,1;sort_type;name,distance;"..sortdropdown.."]"..
     "label[2.4,1.75;Dist:]"..
     "textlist[3,1.75;.5,1;distance_type;3d,2d;"..distdropdown.."]"..
-    "button[4,1.9;2.25,1;hud_pos;Change hud Pos:]"..
-    "field[6.6,2.2;1.2,1;hudx;X:("..hud_default_x..");"..hud_pos[name].x.."]"..
-    "field[7.8,2.2;1.2,1;hudy;Y:("..hud_default_y..");"..hud_pos[name].y.."]"..
     "textlist[0,3.0;9,6;bookmark_list;"..list..";"..bkmrkidx.."]"..
 		"button[0,9.3;3,1;find_bookmark;find selected bookmark]"..
     "button[4,9.3;3,1;teleport;teleport to bookmark]"
@@ -822,27 +872,70 @@ function compassgps.get_compassgps_formspec(name)
 --{"textlist", x=<X>, y=<Y>, w=<Width>, h=<Height>, name="<name>", list=<array of string/number/boolean>}
 --"textlist[0.1,1.2;5.7,3.6;travelpoint;" .. tp_string .. ";" .. tp_index .. "]"
 
-end
+end --get_compassgps_formspec
+
+
+
+function compassgps.get_settings_formspec(name)
+	local player = minetest.get_player_by_name(name)
+
+	return "compassgps:settings", "size[8,4;]"..
+    "button[1,0.2;2.25,1;hud_pos;Change hud:]"..
+    "field[3.6,0.5;1.2,1;hudx;X:("..hud_default_x..");"..hud_pos[name].x.."]"..
+    "field[4.8,0.5;1.2,1;hudy;Y:("..hud_default_y..");"..hud_pos[name].y.."]"..
+	  "field[6.0,0.5;2,1;hudcolor;Color:("..hud_default_color..");"..hud_color[name].."]"..
+	  "label[1,1.5;Compass Type:]"..
+    "image_button[3,1.5;1,1;compass_0.png;compass_type_a;]"..
+    "image_button[4,1.5;1,1;compass_b0.png;compass_type_b;]"..
+    "image_button[5,1.5;1,1;compass_c0.png;compass_type_c;]"
+
+end --get_compassgps_formspec
+
+
+--[
+local images = {
+	"compass_0.png",
+	"compass_1.png",
+	"compass_2.png",
+	"compass_3.png",
+	"compass_4.png",
+	"compass_5.png",
+	"compass_6.png",
+	"compass_7.png",
+	"compass_8.png",
+	"compass_9.png",
+	"compass_10.png",
+	"compass_11.png",
+}
+--]
+
+
 
 local i
-for i,img in ipairs(images) do
-	local inv = 1
-	if i == 1 then
-		inv = 0
-	end
-	minetest.register_tool("compassgps:"..(i-1), {
-		description = "compassgps",
-		inventory_image = img,
-		wield_image = img, --.."^[transformR90"  didn't work
-		on_use = function (itemstack, user, pointed_thing)
-				local name = user:get_player_name()
-				if (name ~= "") then
-					minetest.show_formspec(name, compassgps.get_compassgps_formspec(name))
-				end
-			end,
-		groups = {not_in_creative_inventory=inv}
-	})
-end
+--for i,img in ipairs(images) do
+for i=1,12 do
+  for c,ctype in pairs(compass_valid_types) do
+  	local inv = 1  
+  	if i == 1 and ctype=="a" then
+  		inv = 0
+  	end    
+    ctypename=compassgps.compass_type_name("",(i-1),ctype)
+    img="compass_"..ctypename..".png"
+    --print("registering compassgps:"..ctypename.." img="..img)
+  	minetest.register_tool("compassgps:"..ctypename, {
+  		description = "compassgps",
+  		inventory_image = img,
+  		wield_image = img, --.."^[transformR90"  didn't work
+  		on_use = function (itemstack, user, pointed_thing)
+  				local name = user:get_player_name()
+  				if (name ~= "") then
+  					minetest.show_formspec(name, compassgps.get_compassgps_formspec(name))
+  				end
+  			end,
+  		groups = {not_in_creative_inventory=inv}
+  	})
+  end --for ctype
+end --for i,img
 
 minetest.register_craft({
 	output = 'compassgps:1',
