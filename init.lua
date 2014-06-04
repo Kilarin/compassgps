@@ -1,10 +1,17 @@
---compassgps 1.2
+--compassgps 1.4
 
 --fixed bug that caused compass to jump around in inventory
 --fixed bug causing removed bookmarks not to be saved
 --expanded bookmark list from dropdown to textlist
 --added pos and distance to display list
 --added hud showing current pos -> target pos : distance
+
+--Changelog:
+--1.0 Initial release
+--1.1 switched core to minetest
+--1.2 rounding of position corrected
+--1.3 multiple compass types
+--1.4 corrected teleport button priv
 
 
 local hud_default_x=0.4
@@ -115,12 +122,12 @@ for name,stng in pairs(settings) do
   if settings[name].hud_pos then
     hud_pos[name]=settings[name].hud_pos
   end
-  if settings[name].hud_color then 
+  if settings[name].hud_color then
     hud_color[name]=settings[name].hud_color
-  end  
+  end
   if settings[name].compass_type then
     compass_type[name]=settings[name].compass_type
-  end 
+  end
 end --for
 
 
@@ -197,7 +204,7 @@ minetest.register_on_player_receive_fields(function(player,formname,fields)
       --minetest.show_formspec(name,compassgps.get_confirm_formspec(name,textlist_clicked[name]))
       --seems you can reshow THIS formspec, but not pop up another
       --minetest.show_formspec(name, compassgps.get_confirm_formspec(name,"test"))
-      compassgps.remove_bookmark(name, textlist_clicked[name])      
+      compassgps.remove_bookmark(name, textlist_clicked[name])
   		minetest.show_formspec(name, compassgps.get_compassgps_formspec(name))
     elseif fields["find_bookmark"] and textlist_clicked[name] then
       --if fields["bookmark_list"] then
@@ -234,9 +241,9 @@ minetest.register_on_player_receive_fields(function(player,formname,fields)
       compassgps.teleport_bookmark(name, textlist_clicked[name])
     elseif fields["settings"] then
       --bring up settings screen
-      minetest.show_formspec(name, compassgps.get_settings_formspec(name))        
+      minetest.show_formspec(name, compassgps.get_settings_formspec(name))
 		end --compassgps formspec
-  elseif (name ~= "" and formname == "compassgps:settings") then  
+  elseif (name ~= "" and formname == "compassgps:settings") then
     if fields["hud_pos"] then --and fields["hudx"] and fields["hudy"] then
       --minetest.chat_send_all("hud_pos triggered")
       if tonumber(fields["hudx"]) and tonumber(fields["hudy"]) then
@@ -249,20 +256,20 @@ minetest.register_on_player_receive_fields(function(player,formname,fields)
         end
       else --not numbers
         minetest.chat_send_player(name,"compassgps: hud coords are not numeric.  Change to between 0 and 1")
-      end --if x,y valid    
+      end --if x,y valid
       if tonumber(fields["hudcolor"],16) then
         hud_color[name]=fields["hudcolor"]
       else
         mintest.chat_send_player(name,"compassgps: hud color not valid hex number")
-      end --if color valid      
-    elseif fields["compass_type_a"] then      
+      end --if color valid
+    elseif fields["compass_type_a"] then
       compass_type[name]="a"
     elseif fields["compass_type_b"] then
       compass_type[name]="b"
-      print("compass_type b triggered compass_type[name]="..compass_type[name])      
+      print("compass_type b triggered compass_type[name]="..compass_type[name])
     elseif fields["compass_type_c"] then
-      compass_type[name]="c"      
-    end --  
+      compass_type[name]="c"
+    end --
 	end
 end)
 
@@ -301,7 +308,7 @@ function compassgps.write_settings()
                     sort_function=sort_short,
                     distance_function=dist_short,
                     hud_color=hud_color[name],
-                    compass_type=compass_type[name]}                   
+                    compass_type=compass_type[name]}
 	end
   --now write to file
 	local file = io.open(minetest.get_worldpath().."/compassgps_settings", "w")
@@ -579,18 +586,18 @@ function read_spawns()
 end
 
 
-function compassgps.compass_type_name(playername,imagenum,ctypein)  
+function compassgps.compass_type_name(playername,imagenum,ctypein)
   local ctype="a"
   if ctypein then
     ctype=ctypein
-  end    
-  if playername~="" and compass_type[playername] then 
+  end
+  if playername~="" and compass_type[playername] then
     ctype=compass_type[playername]
   end
   if ctype=="a" then
     ctype=""
-  end  
-  --print("compass type name return "..ctype..imagenum)  
+  end
+  --print("compass type name return "..ctype..imagenum)
   return ctype..imagenum
 end
 
@@ -692,23 +699,23 @@ minetest.register_globalstep(function(dtime)
         hudx=tonumber(hud_pos[name].x)
         hudy=tonumber(hud_pos[name].y)
       else
-        hud_pos[name]={x=hud_default_x, y=hud_default_y}      
+        hud_pos[name]={x=hud_default_x, y=hud_default_y}
       end
 
       local hudcolor=tonumber(hud_default_color, 16)
       if hud_color[name] then
         hudcolor=tonumber(hud_color[name], 16)
-      else  
+      else
         hud_color[name]=hud_default_color
       end
-      
+
       local compasstype=compass_default_type
       if compass_type[name] and
          (compass_type[name]=="a" or compass_type[name]=="b" or compass_type[name]=="c") then
         compasstype=compass_type[name]
       else
         compass_type[name]=compass_default_type
-      end  
+      end
 
       local h=nil
       if hudx>=0 and hudx<=1 and hudy>=0 and hudy<=1 then
@@ -850,9 +857,9 @@ function compassgps.get_compassgps_formspec(name)
   if core then player_privs = core.get_player_privs(name)
   else player_privs = minetest.get_player_privs(name)
   end
-  local telepriv=false
+  local telebutton=""
   if player_privs["teleport"] then
-    telepriv=true
+    telebutton="button[4,9.3;3,1;teleport;teleport to bookmark]"
   end
 
 	return "compassgps:bookmarks", "size[9,10;]"..
@@ -866,7 +873,8 @@ function compassgps.get_compassgps_formspec(name)
     "textlist[3,1.75;.5,1;distance_type;3d,2d;"..distdropdown.."]"..
     "textlist[0,3.0;9,6;bookmark_list;"..list..";"..bkmrkidx.."]"..
 		"button[0,9.3;3,1;find_bookmark;find selected bookmark]"..
-    "button[4,9.3;3,1;teleport;teleport to bookmark]"
+    telebutton
+    --"button[4,9.3;3,1;teleport;teleport to bookmark]"
 
 		--"dropdown[0,1.5;8;bookmark_list;"..list..";1]"..
 --{"textlist", x=<X>, y=<Y>, w=<Width>, h=<Height>, name="<name>", list=<array of string/number/boolean>}
@@ -915,10 +923,10 @@ local i
 --for i,img in ipairs(images) do
 for i=1,12 do
   for c,ctype in pairs(compass_valid_types) do
-  	local inv = 1  
+  	local inv = 1
   	if i == 1 and ctype=="a" then
   		inv = 0
-  	end    
+  	end
     ctypename=compassgps.compass_type_name("",(i-1),ctype)
     img="compass_"..ctypename..".png"
     --print("registering compassgps:"..ctypename.." img="..img)

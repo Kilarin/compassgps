@@ -1,4 +1,4 @@
-compassgps 1.3
+compassgps 1.4
 
 Echo created a compass mod back in 2012: https://forum.minetest.net/viewtopic.php?id=3785
 PilzAdams made a modification of it, which I can not find the source to, I don't know how much of PilzAdams changes made it into the later versions of Echo's mod.
@@ -78,3 +78,10 @@ https://github.com/Kilarin/compassgps/archive/master.zip
 
 [b]To install:[/b]
 Simply unzip the file into your mods folder, then rename the resulting folder from compassgps-master to compassgps
+
+Changelog:
+1.0 Initial release
+1.1 switched core to minetest
+1.2 rounding of position corrected
+1.3 multiple compass types
+1.4 corrected teleport button priv
