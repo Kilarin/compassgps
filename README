@@ -40,6 +40,7 @@ Down at the lower right of the screen, I'm certain you noticed the "Teleport to 
 If you click the "Settings" button in the upper right hand corner it brings up a screen where you can customize the appearance of your compass gps:
 
 [IMG]http://i59.tinypic.com/aahqa8.png[/IMG]
+(The two awesome new compass images are by Bas080 and Spootonium)
 
 I figured the position of the hud text was likely to be something that people would want to customize, so here in the settings gui are the x and y coords for the hud text.  Just enter the new coords where you want the hud text to appear and click "Change Hud"
 The cords must be between 0 and 1 and represent a percentage of the screen, so x=0 would put the text at the far left of the screen, and y=0.98 would put the text almost at the bottom of the screen.  The default is x=0.4 and y=0.01, and that is displayed right over the input boxes so the user can easily set them back to the default if they are having trouble placing the hud. If you change either the x or y coord to a number that is out of range (less than 0 or greater than 1) then the hud will not be displayed.  That makes it easy to turn the hud off if you wish.
