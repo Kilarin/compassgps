@@ -1,4 +1,4 @@
-compassgps 1.3
+compassgps 1.5
 
 Echo created a compass mod back in 2012: https://forum.minetest.net/viewtopic.php?id=3785
 PilzAdams made a modification of it, which I can not find the source to, I don't know how much of PilzAdams changes made it into the later versions of Echo's mod.
@@ -27,13 +27,15 @@ There is a GUI that pops up whenever you wield the compass and left click.  I ne
 
 [IMG]http://i61.tinypic.com/29zzgy1.png[/IMG]
 
+To create a new bookmark, type the name into the "bookmark:" field and click "Create Bookmark" (or just hit enter).  To remove a bookmark, select it from the list and click "Remove Bookmark", and confirmation dialog will appear and the bookmark will only be removed if you click "YES".
+
 The bookmark list has been expanded from a dropdown into a textlist to improve visibility.  Select any bookmark in the list by clicking on it, and then click "Find Selected Bookmark" to make the compass (and hud) point at that location.  "default" is always at the top of the list and will point to (0,0,0) or your bed from PilzAdams bed-mod, or home location as defined in the sethome-mod.  (Setting default to your bed or sethome is old code, I modified it to make it work with my new version, but I cant take credit for the idea or basic structure.)  The rest of the list are bookmarked locations that you have set and named
 
 Just click in the "Sort by" box to change whether the bookmarks are sorted by name, or by distance from your current location.  ("default" will still always be the first item in the list no matter which way you sort it)
 
 Click in the "Dist" box to change whether the distance is calculated in 3d (including your distance in the vertical direction) or in 2d (x and z coords only, ignore vertical distance)
 
-Down at the lower right of the screen, I'm certain you noticed the "Teleport to bookmark" button.  That button appears if, and ONLY IF the player has teleport privileges.  If they do, then they can select any bookmark out of the list, click on teleport, and be instantly transported to the location of that bookmark.  Since the user already had teleport privileges, this just saved them some typing, it's not adding any new abilities.
+Down at the lower right of the screen, I'm certain you noticed the "Teleport to bookmark" button.  [i]That button appears if, and ONLY IF the player has teleport privileges.[/i]  If they do, then they can select any bookmark out of the list, click on teleport, and be instantly transported to the location of that bookmark.  Since the user already had teleport privileges, this just saved them some typing, it's not adding any new abilities.
 
 If you click the "Settings" button in the upper right hand corner it brings up a screen where you can customize the appearance of your compass gps:
 
@@ -45,13 +47,23 @@ You can also change the color of the hud text by changing the value in the "Colo
 
 AND, there are three buttons here that allow you to select from 3 different styles of compass images.  The basic compass image by Echo.  A nice wooden compass image by Bas080.  And a high resolution compass image by spootonium.
 
-The bookmark list is saved any time a user changes it.  All of your other settings, the currently selected bookmark, sort order, distance function, and hud position and color, and compass type, are saved whenever a user leaves the game, and on game shutdown.  so if you move the hud down to the lower right hand corner of the screen, and then quit, the hud will still be in the place you put it when you restart the game later.
+In Multiplayer, there are now shared and admin bookmarks!
+[IMG]http://i57.tinypic.com/fd6rgl.png[/IMG]
+If a player has the new "shared_bookmarks" privilege, then they will get the "Create Shared Bookmark" button and be able to create bookmarks that all players on the server can see and use.  Shared bookmarks are preceeded by *shared* and the name of the player that created them.  There is a variable near the top of the init.lua called max_shared.  This controlles the maximum number of shared bookmarks that an individual player can create.  It is set to 10 by default, but the server admin can change it to whatever they want.  A player can delete their own shared bookmarks, but they can not delete anyone elses (unless they are an admin, then they can delete anyone's shared bookmarks)
+
+If a player has the "privs" privilege, then they will get the "Create Admin Bookmark" button.  Admin bookmarks are intended to allow the admins to mark important places in their world that they want everyone to be able to find.  There are no limits on how many admin bookmarks can be created.  Only Admins can delete admin bookmarks.  
+
+In a multiplayer game, all players get the "Show: Private, Shared, Admin" checkboxes.  You can use these checkboxes to toggle which type of bookmarks show in your list.  If you uncheck all three the system will automatically recheck "Private" for you.
+
+The bookmark list is saved any time a user changes it.  All of your other settings, the currently selected bookmark, sort order, distance function, and hud position and color, and compass type, are saved whenever a user leaves the game, and on game shutdown.  So if you move the hud down to the lower right hand corner of the screen, and then quit, the hud will still be in the place you put it when you restart the game later.
 
 I also fixed a few bugs while I was working on this.  There was a problem in the mod that caused compass to jump around in inventory if there were empty slots above it, that is fixed now.  And there was also a problem with the bookmark list not being saved after you removed a bookmark if you didn't add a new bookmark afterwards.  Now the bookmark list is saved whenever you change it, either adding or removing.
 
-I tried to follow Echo and TeTpaAka's examples of how to properly code for multiplayer games, and I think all of the new settings should work just fine in a multiplayer game.  If anyone tests this on a server, please let me know how it works.
+I tried to follow Echo and TeTpaAka's examples of how to properly code for multiplayer games, and all of the new settings should work just fine in a multiplayer game.  
 
 The code is kinda a mess, because I was learning a lot of new things while working on it.  I hope to do a clean up on it sometime in the near future, but I wanted to release it now so some people could start testing it.  Please do not hesitate to offer critiques, criticism, or coding advice.  I'm new to lua and minetest and could use the help.
+
+And above all, if you run into a bug, please let me know!
 
 [b]Credits:[/b]
 Original mod is by Echo and TeTpaAka, and probably PilzAdam.  Cactuz_pl clockmod showed me how to write the hud to the screen.  My son offered a lot of advice and suggested several changes.  I got an example of how to sort lists in lua from Michal Kottman on StackOverflow.  Big thanks to Bas080 and spootonium for providing some very nice alternate images for the compass gps mod!
@@ -78,3 +90,11 @@ https://github.com/Kilarin/compassgps/archive/master.zip
 
 [b]To install:[/b]
 Simply unzip the file into your mods folder, then rename the resulting folder from compassgps-master to compassgps
+
+[b]Changelog:[/b]
+1.0 Initial release
+1.1 switched core to minetest
+1.2 rounding of position corrected
+1.3 multiple compass types
+1.4 corrected teleport button priv
+1.5 shared/admin bookmarks.  confirm dialog for remove.
