@@ -351,8 +351,9 @@ end
 
 
 function compassgps.check_view_type_all_blank(playername)
-  if view_type_P[playername]=="false" and view_type_S[playername]=="false"
-      and view_type_A[playername]=="false" then
+  if (not view_type_P[playername]) 
+      or (view_type_P[playername]=="false" and view_type_S[playername]=="false"
+      and view_type_A[playername]=="false") then
     view_type_P[playername]="true"
   end
 end --check_view_type_all_blank
@@ -1089,6 +1090,8 @@ function compassgps.get_compassgps_formspec(name)
   else
     distance_function[name]=compassgps.distance3d
   end
+
+  compassgps.check_view_type_all_blank(name)
 
   list,bkmrkidx=compassgps.bookmark_loop("L",name)
 
