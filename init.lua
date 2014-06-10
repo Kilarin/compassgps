@@ -14,7 +14,7 @@ local compass_default_type="a"
 local compass_valid_types={"a","b","c"}
 local activewidth=8 --until I can find some way to get it from minetest
 local max_shared=10 --how many shared bookmarks a user with shared_bookmarks priv can make.
-local show_shared_on_singleplayer=false --show shared and admin checkboxes on singleplayer
+local show_shared_on_singleplayer=true --show shared and admin checkboxes on singleplayer
 --the ONLY reason to change this variable to true is for testing.  shared and admin bookmarks
 --make no sense in a single player game.
 

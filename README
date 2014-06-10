@@ -49,7 +49,7 @@ You can also change the color of the hud text by changing the value in the "Colo
 AND, there are three buttons here that allow you to select from 3 different styles of compass images.  The basic compass image by Echo.  A nice wooden compass image by Bas080.  And a high resolution compass image by spootonium.
 
 In Multiplayer, there are now shared and admin bookmarks!
-[IMG]http://i57.tinypic.com/fd6rgl.png[/IMG]
+[IMG]http://i61.tinypic.com/a5b7li.png[/IMG]
 If a player has the new "shared_bookmarks" privilege, then they will get the "Create Shared Bookmark" button and be able to create bookmarks that all players on the server can see and use.  Shared bookmarks are preceded by *shared* and the name of the player that created them.  There is a variable near the top of the init.lua called max_shared.  This controls the maximum number of shared bookmarks that an individual player can create.  It is set to 10 by default, but the server admin can change it to whatever they want.  A player can delete their own shared bookmarks, but they can not delete anyone else's (unless they are an admin, then they can delete anyone's shared bookmarks)
 
 If a player has the "privs" privilege, then they will get the "Create Admin Bookmark" button.  Admin bookmarks are intended to allow the admins to mark important places in their world that they want everyone to be able to find.  There are no limits on how many admin bookmarks can be created.  Only Admins can delete admin bookmarks.  
