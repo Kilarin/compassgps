@@ -124,9 +124,11 @@ for name,stng in pairs(settings) do
   --if settings[name].point_name then
   --  point_name[name]=settings[name].point_name
   --end
-  if settings[name].point_to then
-    point_to[name]=settings[name].point_to
-  end
+  --if settings[name].point_to and settings[name].point_to.bkmrkname then
+  --  point_to[name]=settings[name].point_to
+  --else
+  --  point_to[name]=nil  
+  --end
   if settings[name].sort_function then
     if settings[name].sort_function == "name" then
       sort_function[name]=compassgps.sort_by_name
@@ -306,7 +308,6 @@ function compassgps.bookmark_loop(mode,playername,findidx)
 	  --set testlist_clicked to the currently selected item in the list
     if mode=="L" and bkmrkidx==1 and vbkmrkname==point_to[playername].bkmrkname
         and vplayernm==point_to[playername].player then
-        print("inside if")
       bkmrkidx=i
       textlist_clicked[playername]=i
       --point_to is the bookmark this player's compass is already pointing to
@@ -336,7 +337,7 @@ end --bookmark_loop
 
 
 function compassgps.get_confirm_formspec(playername,bkmrkidx)
-  print("get_confirm_remove_formspec")
+  --print("get_confirm_remove_formspec")
 	local player = minetest.get_player_by_name(playername)
   if not compassgps.verify_bookmark_parms("remove_bookmark",player,playername,bkmrkidx)
     then return end
