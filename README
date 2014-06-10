@@ -49,13 +49,19 @@ AND, there are three buttons here that allow you to select from 3 different styl
 
 In Multiplayer, there are now shared and admin bookmarks!
 [IMG]http://i57.tinypic.com/fd6rgl.png[/IMG]
-If a player has the new "shared_bookmarks" privilege, then they will get the "Create Shared Bookmark" button and be able to create bookmarks that all players on the server can see and use.  Shared bookmarks are preceeded by *shared* and the name of the player that created them.  There is a variable near the top of the init.lua called max_shared.  This controlles the maximum number of shared bookmarks that an individual player can create.  It is set to 10 by default, but the server admin can change it to whatever they want.  A player can delete their own shared bookmarks, but they can not delete anyone elses (unless they are an admin, then they can delete anyone's shared bookmarks)
+If a player has the new "shared_bookmarks" privilege, then they will get the "Create Shared Bookmark" button and be able to create bookmarks that all players on the server can see and use.  Shared bookmarks are preceded by *shared* and the name of the player that created them.  There is a variable near the top of the init.lua called max_shared.  This controls the maximum number of shared bookmarks that an individual player can create.  It is set to 10 by default, but the server admin can change it to whatever they want.  A player can delete their own shared bookmarks, but they can not delete anyone else's (unless they are an admin, then they can delete anyone's shared bookmarks)
 
 If a player has the "privs" privilege, then they will get the "Create Admin Bookmark" button.  Admin bookmarks are intended to allow the admins to mark important places in their world that they want everyone to be able to find.  There are no limits on how many admin bookmarks can be created.  Only Admins can delete admin bookmarks.  
 
 In a multiplayer game, all players get the "Show: Private, Shared, Admin" checkboxes.  You can use these checkboxes to toggle which type of bookmarks show in your list.  If you uncheck all three the system will automatically recheck "Private" for you.
 
 The bookmark list is saved any time a user changes it.  All of your other settings, the currently selected bookmark, sort order, distance function, and hud position and color, and compass type, are saved whenever a user leaves the game, and on game shutdown.  So if you move the hud down to the lower right hand corner of the screen, and then quit, the hud will still be in the place you put it when you restart the game later.
+
+The Chat Commands from the orignal compass mod still work, but only on private bookmarks.  Chat commands available are:
+list_bookmarks
+set_bookmark <bookmark name>
+find_bookmark <bookmark name>
+remove_bookmark <bookmark name>
 
 I also fixed a few bugs while I was working on this.  There was a problem in the mod that caused compass to jump around in inventory if there were empty slots above it, that is fixed now.  And there was also a problem with the bookmark list not being saved after you removed a bookmark if you didn't add a new bookmark afterwards.  Now the bookmark list is saved whenever you change it, either adding or removing.
 
