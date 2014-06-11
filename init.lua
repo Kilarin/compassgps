@@ -1,5 +1,13 @@
 --compassgps 1.5
 
+--This fork was written by Kilarin (Donald Hines) 
+--Original code by Echo, PilzAdam, and TeTpaAka is WTFPL.
+--My changes are CC0 (No rights reserved)
+--textures: original compass textures: CC BY-SA by Echo
+--          compass b textures: CC BY-SA by Bas080 (slight modifications by Kilarin)
+--          compass c textures: CC BY-SA by Andre Goble mailto:spootonium@gmail.com
+--                              (slight modifications by Kilarin)
+
 --fixed bug that caused compass to jump around in inventory
 --fixed bug causing removed bookmarks not to be saved
 --expanded bookmark list from dropdown to textlist
