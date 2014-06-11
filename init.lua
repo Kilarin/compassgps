@@ -1,6 +1,6 @@
 --compassgps 1.5
 
---This fork was written by Kilarin (Donald Hines) 
+--This fork was written by Kilarin (Donald Hines)
 --Original code by Echo, PilzAdam, and TeTpaAka is WTFPL.
 --My changes are CC0 (No rights reserved)
 --textures: original compass textures: CC BY-SA by Echo
@@ -132,11 +132,11 @@ for name,stng in pairs(settings) do
   --if settings[name].point_name then
   --  point_name[name]=settings[name].point_name
   --end
-  --if settings[name].point_to and settings[name].point_to.bkmrkname then
-  --  point_to[name]=settings[name].point_to
-  --else
-  --  point_to[name]=nil  
-  --end
+  if settings[name].point_to and settings[name].point_to.bkmrkname then
+    point_to[name]=settings[name].point_to
+  else
+    point_to[name]=nil
+  end
   if settings[name].sort_function then
     if settings[name].sort_function == "name" then
       sort_function[name]=compassgps.sort_by_name
@@ -349,8 +349,8 @@ function compassgps.get_confirm_formspec(playername,bkmrkidx)
 	local player = minetest.get_player_by_name(playername)
   if not compassgps.verify_bookmark_parms("remove_bookmark",player,playername,bkmrkidx)
     then return end
-  local bkmrk=textlist_bkmrks[playername][bkmrkidx]      
-  
+  local bkmrk=textlist_bkmrks[playername][bkmrkidx]
+
 	return "compassgps:confirm_remove", "size[8,2;]"..
     "label[0,0.2;Remove bookmark: "..compassgps.bookmark_name_string(bkmrk).." ?]"..
 		"button[0,0.7;4,1;confirm_remove_yes;Yes]"..
@@ -359,7 +359,7 @@ end
 
 
 function compassgps.check_view_type_all_blank(playername)
-  if (not view_type_P[playername]) 
+  if (not view_type_P[playername])
       or (view_type_P[playername]=="false" and view_type_S[playername]=="false"
       and view_type_A[playername]=="false") then
     view_type_P[playername]="true"
@@ -372,7 +372,7 @@ minetest.register_on_player_receive_fields(function(player,formname,fields)
 	if (not player) then
 		return false;
 	end
-	
+
 	local playername = player:get_player_name();
 	if (playername ~= "" and formname == "compassgps:bookmarks") then
     --"bookmark" field is set EVERY time.  I would like to detect someone hitting
@@ -412,9 +412,9 @@ minetest.register_on_player_receive_fields(function(player,formname,fields)
               compassgps.bookmark_name_string(textlist_bkmrks[playername][bkmrkidx]))
           return
         end --if not player_privs
-      end -- if player~=playername    
+      end -- if player~=playername
       --if they got here, they have authority to del the bookmark, show confirm dialog
-      minetest.show_formspec(playername, compassgps.get_confirm_formspec(playername, bkmrkidx))         
+      minetest.show_formspec(playername, compassgps.get_confirm_formspec(playername, bkmrkidx))
     elseif fields["find_bookmark"] and textlist_clicked[playername] then
        --print("compassgps.fields find_bookmark triggered, playername="..playername.." textlist_clicked="..textlist_clicked[playername])
       compassgps.find_bookmark(playername,textlist_clicked[playername])
@@ -486,12 +486,12 @@ minetest.register_on_player_receive_fields(function(player,formname,fields)
       compass_type[playername]="c"
     end --if fields["hud_pos"]
   elseif (playername ~= "" and formname == "compassgps:confirm_remove") then
-    if fields["confirm_remove_yes"] then          
+    if fields["confirm_remove_yes"] then
       compassgps.remove_bookmark(playername, textlist_clicked[playername])
   		minetest.show_formspec(playername, compassgps.get_compassgps_formspec(playername))
     elseif fields["confirm_remove_no"] then
-  		minetest.show_formspec(playername, compassgps.get_compassgps_formspec(playername))  
-    end -- if fields["confirm_remove_yes"]  
+  		minetest.show_formspec(playername, compassgps.get_compassgps_formspec(playername))
+    end -- if fields["confirm_remove_yes"]
 	end -- form if
 end)
 
