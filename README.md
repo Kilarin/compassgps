@@ -2,9 +2,9 @@ This mod creates a customizable compass with user settable bookmarks and shared 
 
 **Compass GPS version 1.6**
 
-Echo created a compass mod back in 2012: [https://forum.minetest.net/viewtopic.php?id=3785](https://forum.minetest.net/viewtopic.php?id=3785)/url]<p>
+Echo created a compass mod back in 2012: [https://forum.minetest.net/viewtopic.php?id=3785](https://forum.minetest.net/viewtopic.php?id=3785)]<p>
 PilzAdams made a modification of it, which I can not find the source to, I don't know how much of PilzAdams changes made it into the later versions of Echo's mod.<p>
-Then in 2013 TeTpaAka made a fork of the compass mod that he called compass+ [https://forum.minetest.net/viewtopic.php?id=8117](https://forum.minetest.net/viewtopic.php?id=8117).minetest.net/viewtopic.php?id=8117[/url]<p>
+Then in 2013 TeTpaAka made a fork of the compass mod that he called compass+ [https://forum.minetest.net/viewtopic.php?id=8117](https://forum.minetest.net/viewtopic.php?id=8117)]<p>
 This fork added the ability to "bookmark" specific places, and a gui so you could choose what point the compass should point to.
 
 This is my fork of TeTpaAka's fork of Echo's mod. :)
@@ -96,10 +96,10 @@ PilzAdams Beds mod and the sethome-mod are supported if you have them.
 This mod will clash with both the original compass and compass+ mods.  They should not be installed and enabled at the same time as compassgps.  HOWEVER, compassgps is 100% compatible with the bookmarks file from the compass+ mod.  So if you were using compass+ and switch to compassgps you will NOT lose your previous bookmarks.
 
 **github source:**<p>
-[https://github.com/Kilarin/compassgps](https://github.com/Kilarin/compassgps)
+[https://github.com/Kilarin/compassgps](https://github.com/Kilarin/compassgps)]
 
 **Download:**<p>
-[https://github.com/Kilarin/compassgps/archive/master.zip](https://github.com/Kilarin/compassgps/archive/master.zip)
+[https://github.com/Kilarin/compassgps/archive/master.zip](https://github.com/Kilarin/compassgps/archive/master.zip)]
 
 **To install:**<p>
 Simply unzip the file into your mods folder, then rename the resulting folder from compassgps-master to compassgps<p>
@@ -107,7 +107,7 @@ OR, simply install it directly from minetest using the online mod repository.
 
 **Mod Database:**<p>
 If you use this mod, please consider reviewing it on the MineTest Mod Database.<p>
-[https://forum.minetest.net/mmdb/mod/compassgps/](https://forum.minetest.net/mmdb/mod/compassgps/)
+[https://forum.minetest.net/mmdb/mod/compassgps/](https://forum.minetest.net/mmdb/mod/compassgps/)]
 
 **Changelog:**<p>
 1.6 fixed compass point_to not saving<p>
