@@ -16,10 +16,11 @@ The compass mod as it was is REALLY cool  I love the way Echo managed to make th
 And TeTpaAka's gui, file io, and coding for multiplayer games was simply amazing.  But as I was learning from their awesome code, I saw some changes I'd like to make using these new ideas, as well as some things I learned while looking at other mods.  So, with complete and total respect for the original awesome mods, and hopefully in the same spirit as theirs, I present my own fork of the fork.  CompassGPS
 
 The crafting recipe for a compass is unchanged:<p>
-```
-     , steel        ,<p>
-steel, mese fragment, steel<p>
-     , steel        ,```
+[code]
+     , steel        ,
+steel, mese fragment, steel
+     , steel        ,
+[/code]<p>
 ![alt text](http://i59.tinypic.com/14ad2qw.png "image")
 
 Compass GPS introduces several other changes though.  First of all, this mod adds a heads up display that indicates your current position, and the name of the bookmark the compass is pointing at, that bookmarks pos, as well as the distance to that bookmark.
