@@ -20,7 +20,7 @@ The crafting recipe for a compass is unchanged:<p>
      , steel        ,
 steel, mese fragment, steel
      , steel        ,
-```<p>
+```
 ![alt text](http://i59.tinypic.com/14ad2qw.png "image")
 
 Compass GPS introduces several other changes though.  First of all, this mod adds a heads up display that indicates your current position, and the name of the bookmark the compass is pointing at, that bookmarks pos, as well as the distance to that bookmark.
