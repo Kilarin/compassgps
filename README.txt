@@ -95,10 +95,10 @@ PilzAdams Beds mod and the sethome-mod are supported if you have them.
 This mod will clash with both the original compass and compass+ mods.  They should not be installed and enabled at the same time as compassgps.  HOWEVER, compassgps is 100% compatible with the bookmarks file from the compass+ mod.  So if you were using compass+ and switch to compassgps you will NOT lose your previous bookmarks.
 
 [b]github source:[/b]
-https://github.com/Kilarin/compassgps
+[url]https://github.com/Kilarin/compassgps[/url]
 
 [b]Download:[/b]
-https://github.com/Kilarin/compassgps/archive/master.zip
+[url]https://github.com/Kilarin/compassgps/archive/master.zip[/url]
 
 [b]To install:[/b]
 Simply unzip the file into your mods folder, then rename the resulting folder from compassgps-master to compassgps
