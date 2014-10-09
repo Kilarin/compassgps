@@ -1,4 +1,4 @@
---compassgps 1.5
+--compassgps 1.7
 
 --This fork was written by Kilarin (Donald Hines)
 --Original code by Echo, PilzAdam, and TeTpaAka is WTFPL.
@@ -359,6 +359,19 @@ end
 
 
 function compassgps.check_view_type_all_blank(playername)
+  --view_type values are not all set when you first bring up the form
+  --so we check to ensure that view_type_A and S are default false for sp and true for mp
+  --and that if all values are false we set view_type_P to true
+  local defaultvalue="true"
+  if singleplayer then
+    defaultvalue="false"
+  end
+  if (not view_type_A[playername]) then
+    view_type_A[playername]=defaultvalue
+  end
+  if (not view_type_S[playername]) then
+    view_type_S[playername]=defaultvalue
+  end
   if (not view_type_P[playername])
       or (view_type_P[playername]=="false" and view_type_S[playername]=="false"
       and view_type_A[playername]=="false") then
