@@ -1,6 +1,6 @@
 This mod creates a customizable compass with user settable bookmarks and shared and admin bookmarks in multiplayer.
 
-**Compass GPS version 1.7**
+**Compass GPS version 1.8**
 
 Echo created a compass mod back in 2012: [https://forum.minetest.net/viewtopic.php?id=3785](https://forum.minetest.net/viewtopic.php?id=3785)<p>
 PilzAdams made a modification of it, which I can not find the source to, I don't know how much of PilzAdams changes made it into the later versions of Echo's mod.<p>
@@ -110,6 +110,7 @@ If you use this mod, please consider reviewing it on the MineTest Mod Database.<
 [https://forum.minetest.net/mmdb/mod/compassgps/](https://forum.minetest.net/mmdb/mod/compassgps/)
 
 **Changelog:**<p>
+1.8 changed register_craft to compassgps:0 for unified inventory compatibility
 1.7 fixed bug causing crash on first load of formspec in multiplayer
 1.6 fixed compass point_to not saving<p>
 1.5 shared/admin bookmarks.  confirm dialog for remove.<p>

@@ -1210,7 +1210,7 @@ for i=1,12 do
 end --for i,img
 
 minetest.register_craft({
-	output = 'compassgps:1',
+	output = 'compassgps:0',
 	recipe = {
 		{'', 'default:steel_ingot', ''},
 		{'default:steel_ingot', 'default:mese_crystal_fragment', 'default:steel_ingot'},
