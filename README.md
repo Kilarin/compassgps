@@ -110,9 +110,9 @@ If you use this mod, please consider reviewing it on the MineTest Mod Database.<
 [https://forum.minetest.net/mmdb/mod/compassgps/](https://forum.minetest.net/mmdb/mod/compassgps/)
 
 **Changelog:**<p>
-1.9 corrected undeclared global variables to avoid warnings.
-1.8 changed register_craft to compassgps:0 for unified inventory compatibility
-1.7 fixed bug causing crash on first load of formspec in multiplayer
+1.9 corrected undeclared global variables to avoid warnings.<p>
+1.8 changed register_craft to compassgps:0 for unified inventory compatibility<p>
+1.7 fixed bug causing crash on first load of formspec in multiplayer<p>
 1.6 fixed compass point_to not saving<p>
 1.5 shared/admin bookmarks.  confirm dialog for remove.<p>
 1.4 corrected teleport button priv<p>
