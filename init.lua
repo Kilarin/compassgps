@@ -1,4 +1,4 @@
---compassgps 1.7
+--compassgps 1.9
 
 --This fork was written by Kilarin (Donald Hines)
 --Original code by Echo, PilzAdam, and TeTpaAka is WTFPL.
@@ -47,6 +47,12 @@ local view_type_A = {}
 local textlist_clicked = {}
 local textlist_bkmrks = {}
 local singleplayer = false
+local target = {}
+local pos = {}
+local dir = 90
+local default_bookmark = {}
+local backwardscompatsave = "NO"
+
 
 print("compasgps reading bookmarks")
 local file = io.open(minetest.get_worldpath().."/bookmarks", "r")
@@ -955,7 +961,7 @@ minetest.register_globalstep(function(dtime)
   		dir = player:get_look_yaw()
   		local angle_north = math.deg(math.atan2(target.x - pos.x, target.z - pos.z))
   		if angle_north < 0 then angle_north = angle_north + 360 end
-  		angle_dir = 90 - math.deg(dir)
+  		local angle_dir = 90 - math.deg(dir)
   		local angle_relative = (angle_north - angle_dir) % 360
   		local compass_image = math.floor((angle_relative/30) + 0.5)%12
 
@@ -1114,6 +1120,8 @@ function compassgps.get_compassgps_formspec(name)
 
   compassgps.check_view_type_all_blank(name)
 
+  local bkmrkidx=1
+  local list={}
   list,bkmrkidx=compassgps.bookmark_loop("L",name)
 
 
