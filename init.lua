@@ -1,4 +1,4 @@
---compassgps 1.9
+--compassgps 1.10
 
 --This fork was written by Kilarin (Donald Hines)
 --Original code by Echo, PilzAdam, and TeTpaAka is WTFPL.
@@ -32,7 +32,7 @@ minetest.register_privilege("shared_bookmarks",
 --	description = "Can create shared bookmarks for use by anyone with a compasgps",
 --	give_to_singleplayer = false,})
 
-local compassgps = { }
+compassgps = { }
 local player_hud = { };
 local bookmarks = { }
 local point_to = {}
@@ -221,6 +221,9 @@ end --bookmark_name_string
 
 
 function compassgps.bookmark_name_pos_dist(bkmrk,playername,playerpos)
+  if distance_function[playername] == nil then
+	return ""
+  end
   return compassgps.bookmark_name_string(bkmrk).." : "..compassgps.pos_to_string(bkmrk)..
       " : "..compassgps.round_digits(distance_function[playername](playerpos,bkmrk),2)
 end --gookmark_name_pos_dist
@@ -582,13 +585,16 @@ end --clean_string
 
 
 
-function compassgps.set_bookmark(playername, bkmrkname, type)
+function compassgps.set_bookmark(playername, bkmrkname, type, predefinedpos)
 	local player = minetest.get_player_by_name(playername)
 	if not player then
 		return
 	end
 
 	local pos = player:getpos()
+	if predefinedpos ~= nil then
+		pos = predefinedpos
+	end
   --we are marking a NODE, no need to keep all those fractions
   pos=compassgps.round_pos(pos)
 
@@ -931,7 +937,7 @@ minetest.register_globalstep(function(dtime)
     --first check to see if the user has a compass, because if they don't
     --there is no reason to waste time calculating bookmarks or spawnpoints.
 		local wielded_item = player:get_wielded_item():get_name()
-		if string.sub(wielded_item, 0, 11) == "compassgps:" then
+		if string.sub(wielded_item, 0, 11) == "compassgps:" and wielded_item ~= "compassgps:book" then
       --if the player is wielding a compass, change the wielded image
       wielded=true
       stackidx=1
@@ -942,7 +948,7 @@ minetest.register_globalstep(function(dtime)
         --is there a way to only check the activewidth items instead of entire list?
         --problem being that arrays are not sorted in lua
 				for i,stack in ipairs(player:get_inventory():get_list("main")) do
-					if i<=activewidth and string.sub(stack:get_name(), 0, 11) == "compassgps:" then
+					if i<=activewidth and string.sub(stack:get_name(), 0, 11) == "compassgps:" and stack:get_name() ~= "compassgps:book" then
             activeinv=stack  --store the stack so we can update it later with new image
             stackidx=i --store the index so we can add image at correct location
             gotacompass=true
@@ -961,7 +967,7 @@ minetest.register_globalstep(function(dtime)
   		dir = player:get_look_yaw()
   		local angle_north = math.deg(math.atan2(target.x - pos.x, target.z - pos.z))
   		if angle_north < 0 then angle_north = angle_north + 360 end
-  		local angle_dir = 90 - math.deg(dir)
+  		angle_dir = 90 - math.deg(dir)
   		local angle_relative = (angle_north - angle_dir) % 360
   		local compass_image = math.floor((angle_relative/30) + 0.5)%12
 
@@ -1225,3 +1231,5 @@ minetest.register_craft({
 		{'', 'default:steel_ingot', ''}
 	}
 })
+
+dofile(minetest.get_modpath("compassgps").."/books.lua")
