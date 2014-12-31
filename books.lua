@@ -60,11 +60,15 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 				if selected_bookmark[playername] == nil then
 					return nil
 				end
-				local bkmrk = string.split(list[selected_bookmark[playername]], "( : )")
-				local write = { ["name"] = bkmrk[1], 
-						x = bkmrk[2],
-						y = bkmrk[3],
-						z = bkmrk[4]}
+				local bkmrk = string.split(list[selected_bookmark[playername]], " : ")
+				table.remove(bkmrk)
+				local coord = string.split(string.sub(table.remove(bkmrk), 2, -2), " ", false, -1, true)
+				print(dump(bkmrk))
+				print(dump(coord))
+				local write = { ["name"] = table.concat(bkmrk, " : "), 
+						x = coord[1],
+						y = coord[2],
+						z = coord[3]}
 				selected_book[playername]:set_metadata(minetest.serialize(write))
 				player:set_wielded_item(selected_book[playername])
 			end
