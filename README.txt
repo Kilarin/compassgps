@@ -1,4 +1,4 @@
-[b]Compass GPS version 2.0[/b]
+[b]Compass GPS version 2.1[/b]
 This mod creates a customizable compass with user settable bookmarks and shared and admin bookmarks in multiplayer.
 
 Echo created a compass mod back in 2012: [url]https://forum.minetest.net/viewtopic.php?id=3785[/url]
@@ -81,7 +81,7 @@ Maps allow you to store a bookmark that you can then give to another player and 
 Craft a blank map by putting 5 papers in an X pattern:
 [code]
 paper,     ,paper
-     ,paper, 
+     ,paper,
 paper,     ,paper
 [/code]
 [img]http://i57.tinypic.com/20z5wmr.png[/img]
@@ -109,7 +109,7 @@ textures: original compass textures: CC BY-SA by Echo
           compass b textures: CC BY-SA by Bas080 (slight modifications by Kilarin)
           compass c textures: CC BY-SA by Andre Goble mailto:spootonium@gmail.com
                               (slight modifications by Kilarin)
-          map texture: CC BY-SA by TeTpaAka (slight modifications by Kilarin for blank map)                    
+          map texture: CC BY-SA by TeTpaAka (slight modifications by Kilarin for blank map)
 
 [b]Dependencies:[/b]
 default is the only requirement.
@@ -133,6 +133,7 @@ If you use this mod, please consider reviewing it on the MineTest Mod Database.
 [url]https://forum.minetest.net/mmdb/mod/compassgps/[/url]
 
 [b]Changelog:[/b]
+2.1 cgpsmap_marked notincreative and defaults to default on /giveme
 2.0 maps so you can exchange bookmarks between players
 1.9 corrected undeclared global variables to avoid warnings.
 1.8 changed register_craft to compassgps:0 for unified inventory compatibility

@@ -21,9 +21,10 @@ end
 function read_from_cgpsmap(itemstack, user, meta)
   --print("read_from_cgpsmap")
 	selected_cgpsmap[user:get_player_name()] = itemstack
-	--local formspec = "size[9,5]"..
-	--		"field[2,1;5,0.5;name;bookmark name:;"..meta["bkmrkname"]..
-	--		"button_exit[2,2;5,0.5;read;copy bookmark to your compassgps]".."]"
+	if not meta then  --marked map from creative or /giveme has no meta!
+    meta={bkmrkname="default",x=0,y=0,z=0}    
+    itemstack:set_metadata(minetest.serialize(meta))
+	end 
 
 	local formspec = "size[9,5]"..
       "label[2,0.5;bookmark pos: ("..meta["x"]..","..meta["y"]..","..meta["z"]..")]"..
@@ -57,7 +58,6 @@ minetest.register_craftitem("compassgps:cgpsmap", {
 	inventory_image = "cgpsmap-blank.png",
 	--group = {book = 1},
 	stack_max = 1,
-
 	on_use = function(itemstack, user, pointed_thing)
 		write_to_cgpsmap(itemstack, user)
 		return
@@ -67,9 +67,8 @@ minetest.register_craftitem("compassgps:cgpsmap", {
 minetest.register_craftitem("compassgps:cgpsmap_marked", {
 	description = "CompassGPS Map (marked)",
 	inventory_image = "cgpsmap-marked.png",
-	--group = {book = 1},
+  groups = {not_in_creative_inventory=1},
 	stack_max = 1,
-
 	on_use = function(itemstack, user, pointed_thing)
 		local meta = minetest.deserialize(itemstack:get_metadata())
 		read_from_cgpsmap(itemstack, user, meta)

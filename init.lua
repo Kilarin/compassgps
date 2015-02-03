@@ -1,4 +1,4 @@
---compassgps 2.0
+--compassgps 2.1
 
 --This fork was written by Kilarin (Donald Hines)
 --Original code by Echo, PilzAdam, and TeTpaAka is WTFPL.
@@ -940,7 +940,7 @@ minetest.register_globalstep(function(dtime)
 		if string.sub(wielded_item, 0, 11) == "compassgps:" and string.sub(wielded_item, 0, 18) ~= "compassgps:cgpsmap" then
       --if the player is wielding a compass, change the wielded image
       wielded=true
-      stackidx=player:get_wield_index() 
+      stackidx=player:get_wield_index()
       gotacompass=true
 		else
       --check to see if compass is in active inventory
