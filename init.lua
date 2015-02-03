@@ -1,4 +1,4 @@
---compassgps 1.10
+--compassgps 2.0
 
 --This fork was written by Kilarin (Donald Hines)
 --Original code by Echo, PilzAdam, and TeTpaAka is WTFPL.
@@ -45,7 +45,7 @@ local view_type_P = {}
 local view_type_S = {}
 local view_type_A = {}
 local textlist_clicked = {}
-local textlist_bkmrks = {}
+textlist_bkmrks = {}
 local singleplayer = false
 local target = {}
 local pos = {}
@@ -937,25 +937,26 @@ minetest.register_globalstep(function(dtime)
     --first check to see if the user has a compass, because if they don't
     --there is no reason to waste time calculating bookmarks or spawnpoints.
 		local wielded_item = player:get_wielded_item():get_name()
-		if string.sub(wielded_item, 0, 11) == "compassgps:" and wielded_item ~= "compassgps:book" then
+		if string.sub(wielded_item, 0, 11) == "compassgps:" and string.sub(wielded_item, 0, 18) ~= "compassgps:cgpsmap" then
       --if the player is wielding a compass, change the wielded image
       wielded=true
-      stackidx=1
+      stackidx=player:get_wield_index() 
       gotacompass=true
 		else
       --check to see if compass is in active inventory
-			if player:get_inventory() then
+      if player:get_inventory() then
         --is there a way to only check the activewidth items instead of entire list?
         --problem being that arrays are not sorted in lua
-				for i,stack in ipairs(player:get_inventory():get_list("main")) do
-					if i<=activewidth and string.sub(stack:get_name(), 0, 11) == "compassgps:" and stack:get_name() ~= "compassgps:book" then
+        for i,stack in ipairs(player:get_inventory():get_list("main")) do
+          if i<=activewidth and string.sub(stack:get_name(), 0, 11) == "compassgps:" and string.sub(stack:get_name(),0,18) ~= "compassgps:cgpsmap" then
             activeinv=stack  --store the stack so we can update it later with new image
             stackidx=i --store the index so we can add image at correct location
             gotacompass=true
-					end --if i<=activewidth
-				end --for loop
-			end -- get_inventory
-		end --if wielded else
+            break
+          end --if i<=activewidth
+        end --for loop
+      end -- get_inventory
+    end --if wielded else
 
 
     --dont mess with the rest of this if they don't have a compass
@@ -963,20 +964,21 @@ minetest.register_globalstep(function(dtime)
       --if they don't have a bookmark set, use the default
       point_to[playername]=point_to[playername] or compassgps.get_default_bookmark(playername)
       target=point_to[playername] --just to take up less space
-  		pos = player:getpos()
-  		dir = player:get_look_yaw()
-  		local angle_north = math.deg(math.atan2(target.x - pos.x, target.z - pos.z))
-  		if angle_north < 0 then angle_north = angle_north + 360 end
-  		angle_dir = 90 - math.deg(dir)
-  		local angle_relative = (angle_north - angle_dir) % 360
-  		local compass_image = math.floor((angle_relative/30) + 0.5)%12
+      pos = player:getpos()
+      dir = player:get_look_yaw()
+      local angle_north = math.deg(math.atan2(target.x - pos.x, target.z - pos.z))
+      if angle_north < 0 then angle_north = angle_north + 360 end
+      local angle_dir = 90 - math.deg(dir)
+      local angle_relative = (angle_north - angle_dir) % 360
+      local compass_image = math.floor((angle_relative/30) + 0.5)%12
+
 
       --update compass image to point at target
-  		if wielded then
+      if wielded then
         player:set_wielded_item("compassgps:"..
             compassgps.compass_type_name(playername,compass_image))
       elseif activeinv then
-				--player:get_inventory():remove_item("main", activeinv:get_name())
+        --player:get_inventory():remove_item("main", activeinv:get_name())
         player:get_inventory():set_stack("main",stackidx,"compassgps:"..
             compassgps.compass_type_name(playername,compass_image))
       end --if wielded elsif activin
@@ -1024,7 +1026,7 @@ minetest.register_globalstep(function(dtime)
           --       " "..compassgps.pos_to_string(target).." : "..
           --       compassgps.round_digits(distance_function[playername](pos,target),2);
           number = hudcolor;
-      		scale = 20;
+          scale = 20;
           });
         end --if x and y in range
       if (player_hud[playername]) then
@@ -1037,7 +1039,7 @@ minetest.register_globalstep(function(dtime)
       player:hud_remove(player_hud[playername]);
       player_hud[playername]=nil
     end --if gotacompass
-	end --for i,player in ipairs(players)
+  end --for i,player in ipairs(players)
 end) -- register_globalstep
 
 
@@ -1095,15 +1097,15 @@ end--spairs
 
 
 function compassgps.get_compassgps_formspec(name)
-	local player = minetest.get_player_by_name(name)
+  local player = minetest.get_player_by_name(name)
   local playerpos = player:getpos()
   --print("get_compassgps_formspec spawn="..compassgps.pos_to_string(store_spawn[name]))
   --local list = "default "..compassgps.pos_to_string(compassgps.get_default_pos_and_name(name))
   --    .." : "..
   --    compassgps.round_digits(distance_function[name](playerpos,
   --         compassgps.get_default_pos_and_name(name)),2)
-	--local k
-	--local v
+  --local k
+  --local v
   --print("get_compassgps_formspec player "..name)
 
   local sortdropdown=1
@@ -1157,10 +1159,10 @@ function compassgps.get_compassgps_formspec(name)
     "checkbox[4.35,2.0;show_admin;Admin;"..view_type_A[name].."]"
   end
 
-	return "compassgps:bookmarks", "size[9,10;]"..
-		"field[0,0.2;5,1;bookmark;bookmark:;]"..
+  return "compassgps:bookmarks", "size[9,10;]"..
+    "field[0,0.2;5,1;bookmark;bookmark:;]"..
     "button[5.5,0;2.25,0.8;settings;Settings]"..
-		"button[0,0.7;2.3,1;new_bookmark;create bookmark]"..
+    "button[0,0.7;2.3,1;new_bookmark;create bookmark]"..
     sharedbutton..
     adminbutton..
     "button[6.9,0.7;2.4,1;remove_bookmark;remove bookmark]"..
@@ -1170,7 +1172,7 @@ function compassgps.get_compassgps_formspec(name)
     "textlist[3,1.75;.5,1;distance_type;3d,2d;"..distdropdown.."]"..
     checkboxes..
     "textlist[0,3.0;9,6;bookmark_list;"..list..";"..bkmrkidx.."]"..
-		"button[0,9.3;3,1;find_bookmark;find selected bookmark]"..
+    "button[0,9.3;3,1;find_bookmark;find selected bookmark]"..
     telebutton
 
 end --get_compassgps_formspec
@@ -1178,14 +1180,14 @@ end --get_compassgps_formspec
 
 
 function compassgps.get_settings_formspec(name)
-	local player = minetest.get_player_by_name(name)
+  local player = minetest.get_player_by_name(name)
 
-	return "compassgps:settings", "size[8,4;]"..
+  return "compassgps:settings", "size[8,4;]"..
     "button[1,0.2;2.25,1;hud_pos;Change hud:]"..
     "field[3.6,0.5;1.2,1;hudx;X:("..hud_default_x..");"..hud_pos[name].x.."]"..
     "field[4.8,0.5;1.2,1;hudy;Y:("..hud_default_y..");"..hud_pos[name].y.."]"..
-	  "field[6.0,0.5;2,1;hudcolor;Color:("..hud_default_color..");"..hud_color[name].."]"..
-	  "label[1,1.5;Compass Type:]"..
+    "field[6.0,0.5;2,1;hudcolor;Color:("..hud_default_color..");"..hud_color[name].."]"..
+    "label[1,1.5;Compass Type:]"..
     "image_button[3,1.5;1,1;compass_0.png;compass_type_a;]"..
     "image_button[4,1.5;1,1;compass_b0.png;compass_type_b;]"..
     "image_button[5,1.5;1,1;compass_c0.png;compass_type_c;]"
@@ -1201,35 +1203,38 @@ local i
 --for i,img in ipairs(images) do
 for i=1,12 do
   for c,ctype in pairs(compass_valid_types) do
-  	local inv = 1
-  	if i == 1 and ctype=="a" then
-  		inv = 0
-  	end
+    local inv = 1
+    if i == 1 and ctype=="a" then
+      inv = 0
+    end
     ctypename=compassgps.compass_type_name("",(i-1),ctype)
     img="compass_"..ctypename..".png"
     --print("registering compassgps:"..ctypename.." img="..img)
-  	minetest.register_tool("compassgps:"..ctypename, {
-  		description = "compassgps",
-  		inventory_image = img,
-  		wield_image = img, --.."^[transformR90"  didn't work
-  		on_use = function (itemstack, user, pointed_thing)
-  				local name = user:get_player_name()
-  				if (name ~= "") then
-  					minetest.show_formspec(name, compassgps.get_compassgps_formspec(name))
-  				end
-  			end,
-  		groups = {not_in_creative_inventory=inv}
-  	})
+    minetest.register_tool("compassgps:"..ctypename, {
+      description = "compassgps",
+      inventory_image = img,
+      wield_image = img, --.."^[transformR90"  didn't work
+      on_use = function (itemstack, user, pointed_thing)
+          local name = user:get_player_name()
+          if (name ~= "") then
+            minetest.show_formspec(name, compassgps.get_compassgps_formspec(name))
+          end
+        end,
+      groups = {not_in_creative_inventory=inv}
+    })
   end --for ctype
 end --for i,img
 
 minetest.register_craft({
-	output = 'compassgps:0',
-	recipe = {
-		{'', 'default:steel_ingot', ''},
-		{'default:steel_ingot', 'default:mese_crystal_fragment', 'default:steel_ingot'},
-		{'', 'default:steel_ingot', ''}
-	}
+  output = 'compassgps:0',
+  recipe = {
+    {'', 'default:steel_ingot', ''},
+    {'default:steel_ingot', 'default:mese_crystal_fragment', 'default:steel_ingot'},
+    {'', 'default:steel_ingot', ''}
+  }
 })
 
-dofile(minetest.get_modpath("compassgps").."/books.lua")
+dofile(minetest.get_modpath("compassgps").."/cgpsmap.lua")
+
+
+

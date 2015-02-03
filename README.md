@@ -1,6 +1,6 @@
 This mod creates a customizable compass with user settable bookmarks and shared and admin bookmarks in multiplayer.
 
-**Compass GPS version 1.9**
+**Compass GPS version 2.0**
 
 Echo created a compass mod back in 2012: [https://forum.minetest.net/viewtopic.php?id=3785](https://forum.minetest.net/viewtopic.php?id=3785)<p>
 PilzAdams made a modification of it, which I can not find the source to, I don't know how much of PilzAdams changes made it into the later versions of Echo's mod.<p>
@@ -74,19 +74,43 @@ I also fixed a few bugs while I was working on this.  There was a problem in the
 
 I tried to follow Echo and TeTpaAka's examples of how to properly code for multiplayer games, and all of the new settings should work just fine in a multiplayer game.
 
+----** MAPS! **----
+
+Thanks to a great idea and initial code from TeTpaAka CompassGPS now includes MAPS!<p>
+Maps allow you to store a bookmark that you can then give to another player and they can use the map to put that bookmark into their own list.  They also enhance role playing/story possibilities since you can hide maps for players to find that will give them bookmarks they need to find their next goal.
+
+Craft a blank map by putting 5 papers in an X pattern:<p>
+```
+paper,     ,paper
+     ,paper,
+paper,     ,paper
+```
+![alt text](http://i57.tinypic.com/20z5wmr.png "image")
+
+To place a bookmark into a map, just right click while wielding the map, select any bookmark from your list, and click the "write to cgpsmap" button<p>
+The map icon now changes to have a red X on it, so you can tell it is a marked map.  This map can be given to another player.  To transfer the bookmark to their own compassgps, they right click while wielding the marked map and a formspec like this pops up:<p>
+![alt text](http://i61.tinypic.com/jakj9v.png "image")<p>
+You can change the name of the bookmark to whatever you wish, click the "copy bookmark to your compassgps" button and the new bookmark is now available in your compassgps list.
+
+To turn a marked map back into a blank map, just put it into the crafting grid.
+
+---------------------
+
 The code is kinda a mess, because I was learning a lot of new things while working on it.  I hope to do a clean up on it sometime in the near future, but I wanted to release it now so some people could start testing it.  Please do not hesitate to offer critiques, criticism, or coding advice.  I'm new to lua and minetest and could use the help.
 
 And above all, if you run into a bug, please let me know!
 
 **Credits:**<p>
-Original mod is by Echo and TeTpaAka, and probably PilzAdam.  Cactuz_pl clockmod showed me how to write the hud to the screen.  My son offered a lot of advice and suggested several changes.  I got an example of how to sort lists in lua from Michal Kottman on StackOverflow.  Big thanks to Bas080 and spootonium for providing some very nice alternate images for the compass gps mod!  Also thanks to Topywo for the shared bookmarks idea, and to my son for several ideas, corrections, and testing help.
+Original mod is by Echo and TeTpaAka, and probably PilzAdam.  Cactuz_pl clockmod showed me how to write the hud to the screen.  My son offered a lot of advice and suggested several changes.  I got an example of how to sort lists in lua from Michal Kottman on StackOverflow.  Big thanks to Bas080 and spootonium for providing some very nice alternate images for the compass gps mod!  Also thanks to Topywo for the shared bookmarks idea, and to my son for several ideas, corrections, and testing help.<p>
+Map idea, image, and initial code by TeTpaAka
 
 **License:**<p>
 Original code by Echo, PilzAdam, and TeTpaAka is WTFPL.  My changes are CC0 (No rights reserved)<p>
 textures: original compass textures: CC BY-SA by Echo<p>
           compass b textures: CC BY-SA by Bas080 (slight modifications by Kilarin)<p>
           compass c textures: CC BY-SA by Andre Goble mailto:spootonium@gmail.com<p>
-                              (slight modifications by Kilarin)
+                              (slight modifications by Kilarin)<p>
+          map texture: CC BY-SA by TeTpaAka (slight modifications by Kilarin for blank map)
 
 **Dependencies:**<p>
 default is the only requirement.<p>
@@ -110,6 +134,7 @@ If you use this mod, please consider reviewing it on the MineTest Mod Database.<
 [https://forum.minetest.net/mmdb/mod/compassgps/](https://forum.minetest.net/mmdb/mod/compassgps/)
 
 **Changelog:**<p>
+2.0 maps so you can exchange bookmarks between players<p>
 1.9 corrected undeclared global variables to avoid warnings.<p>
 1.8 changed register_craft to compassgps:0 for unified inventory compatibility<p>
 1.7 fixed bug causing crash on first load of formspec in multiplayer<p>
