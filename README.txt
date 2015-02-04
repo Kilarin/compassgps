@@ -1,4 +1,4 @@
-[b]Compass GPS version 2.1[/b]
+[b]Compass GPS version 2.2[/b]
 This mod creates a customizable compass with user settable bookmarks and shared and admin bookmarks in multiplayer.
 
 Echo created a compass mod back in 2012: [url]https://forum.minetest.net/viewtopic.php?id=3785[/url]
@@ -86,7 +86,8 @@ paper,     ,paper
 [/code]
 [img]http://i57.tinypic.com/20z5wmr.png[/img]
 
-To place a bookmark into a map, just right click while wielding the map, select any bookmark from your list, and click the "write to cgpsmap" button
+To place a bookmark into a map, just right click while wielding the map, select any bookmark from your list, and click the "write to cgpsmap" button.  You can also put your current position into the map (without having to first create a bookmark in your compassGPS)
+
 The map icon now changes to have a red X on it, so you can tell it is a marked map.  This map can be given to another player.  To transfer the bookmark to their own compassgps, they right click while wielding the marked map and a formspec like this pops up:
 [img]http://i61.tinypic.com/jakj9v.png[/img]
 You can change the name of the bookmark to whatever you wish, click the "copy bookmark to your compassgps" button and the new bookmark is now available in your compassgps list.
@@ -101,7 +102,7 @@ And above all, if you run into a bug, please let me know!
 
 [b]Credits:[/b]
 Original mod is by Echo and TeTpaAka, and probably PilzAdam.  Cactuz_pl clockmod showed me how to write the hud to the screen.  My son offered a lot of advice and suggested several changes.  I got an example of how to sort lists in lua from Michal Kottman on StackOverflow.  Big thanks to Bas080 and spootonium for providing some very nice alternate images for the compass gps mod!  Also thanks to Topywo for the shared bookmarks idea, and to my son for several ideas, corrections, and testing help.
-Map idea, image, and initial code by TeTpaAka
+Map idea, image, and initial code by TeTpaAka.  Store current position in map code contributed by Miner95
 
 [b]License:[/b]
 Original code by Echo, PilzAdam, and TeTpaAka is WTFPL.  My changes are CC0 (No rights reserved)
@@ -133,8 +134,9 @@ If you use this mod, please consider reviewing it on the MineTest Mod Database.
 [url]https://forum.minetest.net/mmdb/mod/compassgps/[/url]
 
 [b]Changelog:[/b]
+2.2 current position option in bookmark list when writing to map (Miner95 contribution)
 2.1 cgpsmap_marked notincreative and defaults to default on /giveme
-2.0 maps so you can exchange bookmarks between players
+2.0 maps so you can exchange bookmarks between players (TeTpaAka initial contribution)
 1.9 corrected undeclared global variables to avoid warnings.
 1.8 changed register_craft to compassgps:0 for unified inventory compatibility
 1.7 fixed bug causing crash on first load of formspec in multiplayer

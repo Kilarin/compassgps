@@ -244,26 +244,32 @@ end--count_shared
 --*********************************************************
 --mode "L" create list for displaying bookmarks in gui
 --mode "C" display private bookmarks only in chat
+--mode "M" similar to "L" but with current position (for maps)
 function compassgps.bookmark_loop(mode,playername,findidx)
   --print("bookmark_loop top")
   local player = minetest.get_player_by_name(playername)
   local playerpos = player:getpos()
   local list=""
-  if mode=="L" then
-    -- first item in the list is always "default"
-    local spawnbkmrk=compassgps.get_default_bookmark(playername)
-    --textlist_clicked[playername]=spawnbkmrk
-    --list = "default "..compassgps.pos_to_string(spawnbkmrk).." : "..
-    --    compassgps.round_digits(distance_function[playername](playerpos,spawnbkmrk),2)
-    list = compassgps.bookmark_name_pos_dist(spawnbkmrk,playername,playerpos)
-    textlist_clicked[playername]=1  --default to default
-    textlist_bkmrks[playername]={}
-    textlist_bkmrks[playername][1]=spawnbkmrk
-    --print("spawnbkmrk .x="..spawnbkmrk.x.." .bkmrkname="..spawnbkmrk.bkmrkname)
-    --print("bookmark_loop 1 spawn "..compassgps.bookmark_to_string(textlist_bkmrks[playername][1]))
-  end --initialize list
   local bkmrkidx=1
-  local i=1
+  local i=1  
+  if mode=="L" or mode=="M" then  
+    local spawnbkmrk=compassgps.get_default_bookmark(playername)
+    textlist_bkmrks[playername]={}
+    if mode=="M" then
+      local cpos=compassgps.round_pos(playerpos)
+      list = "current position : "..compassgps.pos_to_string({x=cpos.x,y=cpos.y,z=cpos.z,player=playername,type="P",bkmrkname=playername.."'s map"})..","..
+      compassgps.bookmark_name_pos_dist(spawnbkmrk,playername,playerpos)
+      textlist_bkmrks[playername][1]={x=cpos.x,y=cpos.y,z=cpos.z,player=playername,type="P",bkmrkname=playername.."'s map"}
+      textlist_bkmrks[playername][2]=spawnbkmrk
+      i=2
+      mode="L"
+    else
+      list = compassgps.bookmark_name_pos_dist(spawnbkmrk,playername,playerpos)
+      textlist_bkmrks[playername][1]=spawnbkmrk
+    end --initialize list
+  textlist_clicked[playername]=1
+  end
+  
   --bkmrkidx will be used to highlight the currently selected item in the list
   backwardscompatsave="NO"
 
@@ -323,20 +329,22 @@ function compassgps.bookmark_loop(mode,playername,findidx)
 
     --print("bookmark_loop mode="..mode.." bkmrkidx="..bkmrkidx.." vbkmkrname="..vbkmrkname.." point_to="..point_to[playername].bkmrkname.." vplayer="..vplayer.." point_to="..point_to[playername].player)
 	  --set testlist_clicked to the currently selected item in the list
-    if mode=="L" and bkmrkidx==1 and vbkmrkname==point_to[playername].bkmrkname
-        and vplayernm==point_to[playername].player then
-      bkmrkidx=i
-      textlist_clicked[playername]=i
-      --point_to is the bookmark this player's compass is already pointing to
-      --when we open the list, if we found a bookmark that matches that item, we want
-      --to highlight it (by setting bkmrkidx to the index to highlight) and we want
-      --to set textlist_clicked to match that item.  We need textlist_clicked because
-      --textlist does not return the currently selected item when you click a button,
-      --so we must keep the currently selected item in memory
-    --elseif mode=="I" and i==findidx then
-    --  return bkmrkname --found the item we were looking for, we are done.
-    end --if mode=L
-	end --for spairs
+    if point_to[playername]~=nil then -- don't crash when point_to[playername] is nil    
+      if mode=="L" and bkmrkidx==1 and vbkmrkname==point_to[playername].bkmrkname
+          and vplayernm==point_to[playername].player then
+        bkmrkidx=i
+        textlist_clicked[playername]=i
+        --point_to is the bookmark this player's compass is already pointing to
+        --when we open the list, if we found a bookmark that matches that item, we want
+        --to highlight it (by setting bkmrkidx to the index to highlight) and we want
+        --to set textlist_clicked to match that item.  We need textlist_clicked because
+        --textlist does not return the currently selected item when you click a button,
+        --so we must keep the currently selected item in memory
+      --elseif mode=="I" and i==findidx then
+      --  return bkmrkname --found the item we were looking for, we are done.
+      end --if mode=L
+  	end --for spairs
+  end --point_to[playername]~=nil  
 
   if backwardscompatsave=="YES" then compassgps.write_bookmarks() end
 

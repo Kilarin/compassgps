@@ -1,3 +1,6 @@
+--original code for storing bookmarks outside of the compass by TeTpaAka
+--modifications by Kilarin and Miner59
+
 local selected_cgpsmap = {}
 local textlist_bookmark = {}
 local selected_bookmark = {}
@@ -5,7 +8,7 @@ local selected_bookmark = {}
 function write_to_cgpsmap(itemstack, user)
   --print("write_to_cgpsmap")
 	selected_cgpsmap[user:get_player_name()] = itemstack
-	local list,bkmrkidx=compassgps.bookmark_loop("L", user:get_player_name())
+	local list,bkmrkidx=compassgps.bookmark_loop("M", user:get_player_name())
 	if list == "" then
 		return nil
 	end
@@ -22,9 +25,9 @@ function read_from_cgpsmap(itemstack, user, meta)
   --print("read_from_cgpsmap")
 	selected_cgpsmap[user:get_player_name()] = itemstack
 	if not meta then  --marked map from creative or /giveme has no meta!
-    meta={bkmrkname="default",x=0,y=0,z=0}    
+    meta={bkmrkname="default",x=0,y=0,z=0}
     itemstack:set_metadata(minetest.serialize(meta))
-	end 
+	end
 
 	local formspec = "size[9,5]"..
       "label[2,0.5;bookmark pos: ("..meta["x"]..","..meta["y"]..","..meta["z"]..")]"..
