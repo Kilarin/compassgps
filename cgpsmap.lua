@@ -1,6 +1,16 @@
 --original code for storing bookmarks outside of the compass by TeTpaAka
 --modifications by Kilarin and Miner59
 
+-- Boilerplate to support localized strings if intllib mod is installed.
+local S
+if (minetest.get_modpath("intllib")) then
+  dofile(minetest.get_modpath("intllib").."/intllib.lua")
+  S = intllib.Getter(minetest.get_current_modname())
+else
+  S = function ( s ) return s end
+end
+
+
 local selected_cgpsmap = {}
 local textlist_bookmark = {}
 local selected_bookmark = {}
@@ -14,7 +24,7 @@ function write_to_cgpsmap(itemstack, user)
 	end
 	textlist_bookmark[user:get_player_name()] = list
 	local formspec = "size[9,10;]"..
-			"button_exit[2,2;5,0.5;write;Write to cgpsmap]"..
+			"button_exit[2,2;5,0.5;write;"..S("Write to cgpsmap").."]"..
 			"textlist[0,3.0;9,6;bookmark_list;"..list..";"..bkmrkidx.."]"
 	minetest.show_formspec(user:get_player_name(), "compassgps:write", formspec)
   --print("write_to_cgpsmap end")
@@ -30,9 +40,9 @@ function read_from_cgpsmap(itemstack, user, meta)
 	end
 
 	local formspec = "size[9,5]"..
-      "label[2,0.5;bookmark pos: ("..meta["x"]..","..meta["y"]..","..meta["z"]..")]"..
-      "field[2,2;5,0.5;name;bookmark name:;"..meta["bkmrkname"].."]"..
-			"button_exit[2,3;5,0.5;read;copy bookmark to your compassgps]"
+      "label[2,0.5;"..S("bookmark pos:").." ("..meta["x"]..","..meta["y"]..","..meta["z"]..")]"..
+      "field[2,2;5,0.5;name;"..S("bookmark name:")..";"..meta["bkmrkname"].."]"..
+			"button_exit[2,3;5,0.5;read;"..S("copy bookmark to your compassgps").."]"
 
 	minetest.show_formspec(user:get_player_name(), "compassgps:read", formspec)
   --print("read_from_cgpsmap end")
@@ -57,7 +67,7 @@ minetest.register_craft({
 })
 
 minetest.register_craftitem("compassgps:cgpsmap", {
-	description = "CompassGPS Map (blank)",
+	description = S("CompassGPS Map (blank)"),
 	inventory_image = "cgpsmap-blank.png",
 	--group = {book = 1},
 	stack_max = 1,
@@ -68,7 +78,7 @@ minetest.register_craftitem("compassgps:cgpsmap", {
 })
 
 minetest.register_craftitem("compassgps:cgpsmap_marked", {
-	description = "CompassGPS Map (marked)",
+	description = S("CompassGPS Map (marked)"),
 	inventory_image = "cgpsmap-marked.png",
   groups = {not_in_creative_inventory=1},
 	stack_max = 1,
