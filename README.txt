@@ -1,4 +1,4 @@
-[b]Compass GPS version 2.2[/b]
+[b]Compass GPS version 2.3[/b]
 This mod creates a customizable compass with user settable bookmarks and shared and admin bookmarks in multiplayer.
 
 Echo created a compass mod back in 2012: [url]https://forum.minetest.net/viewtopic.php?id=3785[/url]
@@ -103,6 +103,7 @@ And above all, if you run into a bug, please let me know!
 [b]Credits:[/b]
 Original mod is by Echo and TeTpaAka, and probably PilzAdam.  Cactuz_pl clockmod showed me how to write the hud to the screen.  My son offered a lot of advice and suggested several changes.  I got an example of how to sort lists in lua from Michal Kottman on StackOverflow.  Big thanks to Bas080 and spootonium for providing some very nice alternate images for the compass gps mod!  Also thanks to Topywo for the shared bookmarks idea, and to my son for several ideas, corrections, and testing help.
 Map idea, image, and initial code by TeTpaAka.  Store current position in map code contributed by Miner95
+intllib support by TeTpaAka
 
 [b]License:[/b]
 Original code by Echo, PilzAdam, and TeTpaAka is WTFPL.  My changes are CC0 (No rights reserved)
@@ -119,7 +120,7 @@ PilzAdams Beds mod and the sethome-mod are supported if you have them.
 [b]Incompatibilities:[/b]
 This mod will clash with both the original compass and compass+ mods.  They should not be installed and enabled at the same time as compassgps.  HOWEVER, compassgps is 100% compatible with the bookmarks file from the compass+ mod.  So if you were using compass+ and switch to compassgps you will NOT lose your previous bookmarks.
 
-[b]github source:[/b]
+[b]github source:[/b] 
 [url]https://github.com/Kilarin/compassgps[/url]
 
 [b]Download:[/b]
@@ -134,6 +135,7 @@ If you use this mod, please consider reviewing it on the MineTest Mod Database.
 [url]https://forum.minetest.net/mmdb/mod/compassgps/[/url]
 
 [b]Changelog:[/b]
+2.3 intllib support by TeTpaTka so CompassGPS will work with different languages now!
 2.2 current position option in bookmark list when writing to map (Miner95 contribution)
 2.1 cgpsmap_marked notincreative and defaults to default on /giveme
 2.0 maps so you can exchange bookmarks between players (TeTpaAka initial contribution)

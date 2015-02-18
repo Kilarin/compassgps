@@ -1,6 +1,6 @@
 This mod creates a customizable compass with user settable bookmarks and shared and admin bookmarks in multiplayer.
 
-**Compass GPS version 2.2**
+**Compass GPS version 2.3**
 
 Echo created a compass mod back in 2012: [https://forum.minetest.net/viewtopic.php?id=3785](https://forum.minetest.net/viewtopic.php?id=3785)<p>
 PilzAdams made a modification of it, which I can not find the source to, I don't know how much of PilzAdams changes made it into the later versions of Echo's mod.<p>
@@ -103,7 +103,8 @@ And above all, if you run into a bug, please let me know!
 
 **Credits:**<p>
 Original mod is by Echo and TeTpaAka, and probably PilzAdam.  Cactuz_pl clockmod showed me how to write the hud to the screen.  My son offered a lot of advice and suggested several changes.  I got an example of how to sort lists in lua from Michal Kottman on StackOverflow.  Big thanks to Bas080 and spootonium for providing some very nice alternate images for the compass gps mod!  Also thanks to Topywo for the shared bookmarks idea, and to my son for several ideas, corrections, and testing help.<p>
-Map idea, image, and initial code by TeTpaAka.  Store current position in map code contributed by Miner95
+Map idea, image, and initial code by TeTpaAka.  Store current position in map code contributed by Miner95<p>
+intllib support by TeTpaAka
 
 **License:**<p>
 Original code by Echo, PilzAdam, and TeTpaAka is WTFPL.  My changes are CC0 (No rights reserved)<p>
@@ -120,7 +121,7 @@ PilzAdams Beds mod and the sethome-mod are supported if you have them.
 **Incompatibilities:**<p>
 This mod will clash with both the original compass and compass+ mods.  They should not be installed and enabled at the same time as compassgps.  HOWEVER, compassgps is 100% compatible with the bookmarks file from the compass+ mod.  So if you were using compass+ and switch to compassgps you will NOT lose your previous bookmarks.
 
-**github source:**<p>
+**github source:** <p>
 [https://github.com/Kilarin/compassgps](https://github.com/Kilarin/compassgps)
 
 **Download:**<p>
@@ -135,6 +136,7 @@ If you use this mod, please consider reviewing it on the MineTest Mod Database.<
 [https://forum.minetest.net/mmdb/mod/compassgps/](https://forum.minetest.net/mmdb/mod/compassgps/)
 
 **Changelog:**<p>
+2.3 intllib support by TeTpaTka so CompassGPS will work with different languages now!<p>
 2.2 current position option in bookmark list when writing to map (Miner95 contribution)<p>
 2.1 cgpsmap_marked notincreative and defaults to default on /giveme<p>
 2.0 maps so you can exchange bookmarks between players (TeTpaAka initial contribution)<p>
