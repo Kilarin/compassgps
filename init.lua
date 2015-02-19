@@ -258,8 +258,8 @@ function compassgps.bookmark_loop(mode,playername,findidx)
   local playerpos = player:getpos()
   local list=""
   local bkmrkidx=1
-  local i=1  
-  if mode=="L" or mode=="M" then  
+  local i=1
+  if mode=="L" or mode=="M" then
     local spawnbkmrk=compassgps.get_default_bookmark(playername)
     textlist_bkmrks[playername]={}
     if mode=="M" then
@@ -276,7 +276,7 @@ function compassgps.bookmark_loop(mode,playername,findidx)
     end --initialize list
   textlist_clicked[playername]=1
   end
-  
+
   --bkmrkidx will be used to highlight the currently selected item in the list
   backwardscompatsave="NO"
 
@@ -336,7 +336,7 @@ function compassgps.bookmark_loop(mode,playername,findidx)
 
     --print("bookmark_loop mode="..mode.." bkmrkidx="..bkmrkidx.." vbkmkrname="..vbkmrkname.." point_to="..point_to[playername].bkmrkname.." vplayer="..vplayer.." point_to="..point_to[playername].player)
 	  --set testlist_clicked to the currently selected item in the list
-    if point_to[playername]~=nil then -- don't crash when point_to[playername] is nil    
+    if point_to[playername]~=nil then -- don't crash when point_to[playername] is nil
       if mode=="L" and bkmrkidx==1 and vbkmrkname==point_to[playername].bkmrkname
           and vplayernm==point_to[playername].player then
         bkmrkidx=i
@@ -351,7 +351,7 @@ function compassgps.bookmark_loop(mode,playername,findidx)
       --  return bkmrkname --found the item we were looking for, we are done.
       end --if mode=L
   	end --for spairs
-  end --point_to[playername]~=nil  
+  end --point_to[playername]~=nil
 
   if backwardscompatsave=="YES" then compassgps.write_bookmarks() end
 
@@ -793,16 +793,16 @@ function compassgps.find_bookmark_byname(playername, bkmrkname)
 		return
 	end
 	if not bkmrkname or bkmrkname == "" then
-		minetest.chat_send_player(name, S("No bookmark was specified."))
+		minetest.chat_send_player(playername, S("No bookmark was specified."))
 		return
 	end
 	if bkmrkname == "default" then
-		minetest.chat_send_player(name, S("Pointing at default location."))
+		minetest.chat_send_player(playername, S("Pointing at default location."))
 		point_to[playername] = compassgps.get_default_bookmark(playername)
 		return
 	end
 	if not bookmarks[playername..bkmrkname] then
-		minetest.chat_send_player(name, S("You have no bookmark with this name."))
+		minetest.chat_send_player(playername, S("You have no bookmark with this name."))
 		return
 	end
 	point_to[playername] = bookmarks[playername..bkmrkname]
