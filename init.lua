@@ -967,7 +967,7 @@ end --get_default_bookmark
 
 function compassgps.get_default_pos_and_name(name)
 	-- try to get position from PilzAdams bed-mod spawn
-	local pos = bedss_spawns[name]
+	local pos = beds_spawns[name]
   local posname="bed"
 	-- fallback to sethome position
 	if pos == nil then
