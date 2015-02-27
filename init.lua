@@ -260,7 +260,7 @@ function compassgps.bookmark_loop(mode,playername,findidx)
   local bkmrkidx=1
   local i=1
   if mode=="L" or mode=="M" then
-    local spawnbkmrk=compassgps.get_default_bookmark(playername)
+    local spawnbkmrk=compassgps.get_default_bookmark(playername,1)
     textlist_bkmrks[playername]={}
     if mode=="M" then
       local cpos=compassgps.round_pos(playerpos)
@@ -466,10 +466,10 @@ minetest.register_on_player_receive_fields(function(player,formname,fields)
       end -- if player~=playername
 
 	-- you can't remove default bookmarks (bed, home, spawnpoint)
-	if textlist_bkmrks[playername][bkmrkidx].bkmrkname==nil then
+	if textlist_bkmrks[playername][bkmrkidx].bkmrkname==nil or textlist_bkmrks[playername][bkmrkidx].player==nil then
 		return
 	end
-	if bookmarks[playername..textlist_bkmrks[playername][bkmrkidx].bkmrkname]==nil then
+	if bookmarks[textlist_bkmrks[playername][bkmrkidx].player..textlist_bkmrks[playername][bkmrkidx].bkmrkname]==nil then
 		return
 	end
 	
@@ -821,7 +821,7 @@ function compassgps.find_bookmark_byname(playername, bkmrkname)
 	end
 	if bkmrkname == "default" then
 		minetest.chat_send_player(playername, S("Pointing at default location."))
-		point_to[playername] = compassgps.get_default_bookmark(playername)
+		point_to[playername] = compassgps.get_default_bookmark(playername,1)
 		return
 	end
 	if not bookmarks[playername..bkmrkname] then
@@ -1027,7 +1027,7 @@ minetest.register_globalstep(function(dtime)
     --dont mess with the rest of this if they don't have a compass
     if gotacompass then
       --if they don't have a bookmark set, use the default
-      point_to[playername]=point_to[playername] or compassgps.get_default_bookmark(playername)
+      point_to[playername]=point_to[playername] or compassgps.get_default_bookmark(playername,1)
       target=point_to[playername] --just to take up less space
       pos = player:getpos()
       dir = player:get_look_yaw()
