@@ -260,7 +260,7 @@ function compassgps.bookmark_loop(mode,playername,findidx)
   local bkmrkidx=1
   local i=1
   if mode=="L" or mode=="M" then
-    local spawnbkmrk=compassgps.get_default_bookmark(playername)
+    local spawnbkmrk=compassgps.get_default_bookmark(playername,1)
     textlist_bkmrks[playername]={}
     if mode=="M" then
       local cpos=compassgps.round_pos(playerpos)
@@ -274,7 +274,21 @@ function compassgps.bookmark_loop(mode,playername,findidx)
       list = compassgps.bookmark_name_pos_dist(spawnbkmrk,playername,playerpos)
       textlist_bkmrks[playername][1]=spawnbkmrk
     end --initialize list
-  textlist_clicked[playername]=1
+  	
+  	--add all spawn position from beds mod, sethome mod and the default spawn point
+	spawnbkmrk=compassgps.get_default_bookmark(playername,2)
+	if spawnbkmrk~=nil then
+		i=i+1
+	        list = list..","..compassgps.bookmark_name_pos_dist(spawnbkmrk,playername,playerpos)
+	        textlist_bkmrks[playername][i]=spawnbkmrk
+	end
+	spawnbkmrk=compassgps.get_default_bookmark(playername,3)
+	if spawnbkmrk~=nil then
+		i=i+1
+	        list = list..","..compassgps.bookmark_name_pos_dist(spawnbkmrk,playername,playerpos)
+	        textlist_bkmrks[playername][i]=spawnbkmrk
+	end
+      textlist_clicked[playername]=1
   end
 
   --bkmrkidx will be used to highlight the currently selected item in the list
@@ -450,6 +464,15 @@ minetest.register_on_player_receive_fields(function(player,formname,fields)
           return
         end --if not player_privs
       end -- if player~=playername
+
+	-- you can't remove default bookmarks (bed, home, spawnpoint)
+	if textlist_bkmrks[playername][bkmrkidx].bkmrkname==nil or textlist_bkmrks[playername][bkmrkidx].player==nil then
+		return
+	end
+	if bookmarks[textlist_bkmrks[playername][bkmrkidx].player..textlist_bkmrks[playername][bkmrkidx].bkmrkname]==nil then
+		return
+	end
+	
       --if they got here, they have authority to del the bookmark, show confirm dialog
       minetest.show_formspec(playername, compassgps.get_confirm_formspec(playername, bkmrkidx))
     elseif fields["find_bookmark"] and textlist_clicked[playername] then
@@ -798,7 +821,7 @@ function compassgps.find_bookmark_byname(playername, bkmrkname)
 	end
 	if bkmrkname == "default" then
 		minetest.chat_send_player(playername, S("Pointing at default location."))
-		point_to[playername] = compassgps.get_default_bookmark(playername)
+		point_to[playername] = compassgps.get_default_bookmark(playername,1)
 		return
 	end
 	if not bookmarks[playername..bkmrkname] then
@@ -850,15 +873,32 @@ if (default_spawn_settings) then
 end
 
 local last_time_spawns_read = "default"
-local pilzadams_spawns = {}
+local beds_spawns = {}
 local sethome_spawns = {}
 function read_spawns()
-	-- read PilzAdams bed-mod positions
-	local pilzadams_file = io.open(minetest.get_worldpath().."/beds_player_spawns", "r")
-	if pilzadams_file then
-		pilzadams_spawns = minetest.deserialize(pilzadams_file:read("*all"))
-		pilzadams_file:close()
+	-- read BlockMen beds-mod positions (added to default minetest game)
+	local beds_file = io.open(minetest.get_worldpath().."/beds_spawns", "r")
+	if beds_file then
+		while true do
+			local x = beds_file:read("*n")
+			if x == nil then
+				break
+			end
+			local y = beds_file:read("*n")
+			local z = beds_file:read("*n")
+			local name = beds_file:read("*l")
+			beds_spawns[name:sub(2)] = {x = x, y = y, z = z}
+		end
+		io.close(beds_file)
+	else
+	-- read PilzAdams beds-mod positions
+	beds_file = io.open(minetest.get_worldpath().."/beds_player_spawns", "r")
+		if beds_file then
+			beds_spawns = minetest.deserialize(beds_file:read("*all"))
+			beds_file:close()
+		end
 	end
+
 	-- read sethome-mod positions
 	if minetest.get_modpath('sethome') then
 		local sethome_file = io.open(minetest.get_modpath('sethome')..'/homes', "r")
@@ -895,29 +935,39 @@ function compassgps.compass_type_name(playername,imagenum,ctypein)
 end
 
 
-function compassgps.get_default_bookmark(name)
-	-- try to get position from PilzAdams bed-mod spawn
-	local pos = pilzadams_spawns[name]
-  local posname="bed"
+function compassgps.get_default_bookmark(name,num)
+	-- try to get position from beds-mod spawn
+	local pos = beds_spawns[name]
+	local posname="bed"
+	if pos~=nil and num==1 then
+	   default_bookmark={x=pos.x,y=pos.y,z=pos.z,player=name,type="P",bkmrkname=posname}
+	   return default_bookmark
+	elseif pos~=nil then
+	   num=num-1
+	end
 	-- fallback to sethome position
-	if pos == nil then
-		pos = sethome_spawns[name]
-    posname="sethome"
+	pos = sethome_spawns[name]
+	posname="home"
+	if pos~=nil and num==1 then
+  	   default_bookmark={x=pos.x,y=pos.y,z=pos.z,player=name,type="P",bkmrkname=posname}
+	   return default_bookmark
+	elseif pos~=nil then
+	   num=num-1
 	end
-	-- fallback to default
-	if pos == nil then
-		pos = default_spawn;
-    posname="default"
+	if num>1 then
+	   return
 	end
-default_bookmark={x=pos.x,y=pos.y,z=pos.z,player=name,type="P",bkmrkname=posname}
---return posname,default_bookmark
-return default_bookmark
-end --get_default_bookmark
 
+	-- fallback to default
+	pos = default_spawn;
+	posname="spawn"
+	default_bookmark={x=pos.x,y=pos.y,z=pos.z,player=name,type="P",bkmrkname=posname}
+	return default_bookmark
+end --get_default_bookmark
 
 function compassgps.get_default_pos_and_name(name)
 	-- try to get position from PilzAdams bed-mod spawn
-	local pos = pilzadams_spawns[name]
+	local pos = beds_spawns[name]
   local posname="bed"
 	-- fallback to sethome position
 	if pos == nil then
@@ -977,7 +1027,7 @@ minetest.register_globalstep(function(dtime)
     --dont mess with the rest of this if they don't have a compass
     if gotacompass then
       --if they don't have a bookmark set, use the default
-      point_to[playername]=point_to[playername] or compassgps.get_default_bookmark(playername)
+      point_to[playername]=point_to[playername] or compassgps.get_default_bookmark(playername,1)
       target=point_to[playername] --just to take up less space
       pos = player:getpos()
       dir = player:get_look_yaw()
