@@ -213,7 +213,7 @@ minetest.register_entity("compassgps:cgpsmap_item",{
 
 minetest.register_abm({
 	nodenames = { "compassgps:cgpsmap_wall" },
-	interval = 1,
+	interval = 600,
 	chance = 1,
 	action = function(pos, node, active_object_count, active_object_count_wider)
 		if #minetest.get_objects_inside_radius(pos, 0.5) > 0 then return end
