@@ -33,17 +33,24 @@ end
 
 function read_from_cgpsmap(itemstack, user, meta)
   --print("read_from_cgpsmap")
-	selected_cgpsmap[user:get_player_name()] = itemstack
-	if not meta then  --marked map from creative or /giveme has no meta!
-    meta={bkmrkname="default",x=0,y=0,z=0}
-    itemstack:set_metadata(minetest.serialize(meta))
-	end
-
 	local formspec = "size[9,5]"..
-      "label[2,0.5;"..S("bookmark pos:").." ("..meta["x"]..","..meta["y"]..","..meta["z"]..")]"..
-      "field[2,2;5,0.5;name;"..S("bookmark name:")..";"..meta["bkmrkname"].."]"..
 			"button_exit[2,3;5,0.5;read;"..S("copy bookmark to your compassgps").."]"
+	if itemstack~=nil then
+		formspec=formspec.. "button_exit[3.1,4;2.6,0.8;rename;"..S("rename bookmark").."]"
+	else
+	    itemstack=ItemStack("compassgps:cgpsmap_marked 1")
+	    if meta then
+		itemstack:set_metadata(minetest.serialize(meta))
+	    end
+	end
+	if not meta then  --marked map from creative or /giveme has no meta!
+	    meta={bkmrkname="default",x=0,y=0,z=0}
+		itemstack:set_metadata(minetest.serialize(meta))
+	end
+	selected_cgpsmap[user:get_player_name()] = itemstack
 
+      formspec=formspec.."label[2,0.5;"..S("bookmark pos:").." ("..meta["x"]..","..meta["y"]..","..meta["z"]..")]"..
+	      "field[2,2;5,0.5;name;"..S("bookmark name:")..";"..meta["bkmrkname"].."]"
 	minetest.show_formspec(user:get_player_name(), "compassgps:read", formspec)
   --print("read_from_cgpsmap end")
 end
@@ -163,10 +170,16 @@ minetest.register_node("compassgps:cgpsmap_wall",{
 	legacy_wallmounted = true,
 	sounds = default.node_sound_defaults(),
 	on_punch = function(pos,node,puncher)
+		local meta = minetest.env:get_meta(pos)
+		local mapdata=meta:get_string("mapdata")
+
 		if minetest.is_protected(pos,puncher:get_player_name()) then
+			--don't take map, instead open formspec to add coordinates in compassgps
+			if mapdata~=nil then
+				read_from_cgpsmap(nil, puncher, minetest.deserialize(mapdata))
+			end
 			return
 		end
-		local meta = minetest.env:get_meta(pos)
 		local inv = puncher:get_inventory()
 
 		local objs = nil
@@ -179,7 +192,6 @@ minetest.register_node("compassgps:cgpsmap_wall",{
 			end
 		end
 		local itemstack=ItemStack("compassgps:cgpsmap_marked 1")
-		local mapdata=meta:get_string("mapdata")
 		itemstack:set_metadata(mapdata)
 		if inv:room_for_item("main",itemstack) then
 			inv:add_item("main",itemstack)	
@@ -303,5 +315,28 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		end
 	end
 
-end)
-
+	if (selected_cgpsmap == nil) then
+		return
+	end
+	local playername = player:get_player_name()
+	if (playername == nil) then
+		return
+	end
+	if (selected_cgpsmap[playername] == nil) then
+		return
+	end
+	if fields["rename"] then
+	      local bkmrkname = fields["name"]
+		local meta = minetest.deserialize(selected_cgpsmap[player:get_player_name()]:get_metadata())
+		if meta~=nil and bkmrkname~=nil then
+			local pos = {	x = meta["x"] + 0,
+				y = meta["y"] + 0,
+				z = meta["z"] + 0 }
+			selected_cgpsmap[playername]:set_metadata(minetest.serialize({ ["bkmrkname"] = bkmrkname,
+                        x = pos.x,
+                        y = pos.y,
+                        z = pos.z}))
+			player:set_wielded_item(selected_cgpsmap[playername]) --new name is saved in marked cpgsmap
+			end
+		end
+	end)
