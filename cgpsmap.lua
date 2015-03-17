@@ -69,7 +69,7 @@ minetest.register_craft({
 minetest.register_craftitem("compassgps:cgpsmap", {
 	description = S("CompassGPS Map (blank)"),
 	inventory_image = "cgpsmap-blank.png",
-	--group = {book = 1},
+	--groups = {book = 1},
 	stack_max = 1,
 	on_use = function(itemstack, user, pointed_thing)
 		write_to_cgpsmap(itemstack, user)
@@ -78,14 +78,176 @@ minetest.register_craftitem("compassgps:cgpsmap", {
 })
 
 minetest.register_craftitem("compassgps:cgpsmap_marked", {
-	description = S("CompassGPS Map (marked)"),
-	inventory_image = "cgpsmap-marked.png",
-  groups = {not_in_creative_inventory=1},
+	description = "CompassGPS Map (marked)",
+	inventory_image = "cgpsmap_marked.png",
+	groups = {not_in_creative_inventory = 1},
 	stack_max = 1,
+
 	on_use = function(itemstack, user, pointed_thing)
 		local meta = minetest.deserialize(itemstack:get_metadata())
 		read_from_cgpsmap(itemstack, user, meta)
 		return nil
+	end,
+
+	on_place = function(itemstack, placer, pointed_thing) 
+		if pointed_thing.type=="node" and pointed_thing.above then
+			local pos=pointed_thing.above
+			local ppos=placer:getpos()
+			local facedir=minetest.dir_to_facedir(vector.direction(ppos,pointed_thing.under))
+			local x=pos.x
+			local y=pos.y
+			local z=pos.z
+			if facedir~=nil and itemstack:get_name()=="compassgps:cgpsmap_marked" 
+			   and (not minetest.is_protected(pos,placer:get_player_name())) then
+				minetest.set_node(pos,{name="compassgps:cgpsmap_wall",param2=facedir})
+				local mapdata = itemstack:get_metadata()
+				local meta=minetest.get_meta(pos)
+				meta:set_string("mapdata",mapdata)
+				if mapdata~=nil then		
+					local data=minetest.deserialize(mapdata)
+					if data~=nil then
+						meta:set_string("infotext", data["bkmrkname"])
+						x=data["x"]
+						y=data["y"]
+						z=data["z"]
+					end
+				end
+				if facedir==1 then
+					pos={x=pos.x+0.3,y=pos.y,z=pos.z}
+				elseif facedir==3 then
+					pos={x=pos.x-0.3,y=pos.y,z=pos.z}
+				elseif facedir==0 then
+					pos={x=pos.x,y=pos.y,z=pos.z+0.3}
+				elseif facedir==2 then
+					pos={x=pos.x,y=pos.y,z=pos.z-0.3}
+				end
+				local e = minetest.env:add_entity(pos,"compassgps:cgpsmap_item")
+				local yaw = math.pi*2 - facedir * math.pi/2
+				e:setyaw(yaw)
+				local dist=math.abs(pos.x-x)+math.abs(pos.y-y)+math.abs(pos.z-z)
+				if dist>30000 then
+					e:set_properties({visual_size={x=3.45,y=3.45}})
+				elseif dist>15000 then
+					e:set_properties({visual_size={x=2.95,y=2.95}})
+				elseif dist>5000 then
+					e:set_properties({visual_size={x=2.45,y=2.45}})
+				elseif dist>3000 then
+					e:set_properties({visual_size={x=1.45,y=1.45}})
+				elseif dist>2000 then
+					e:set_properties({visual_size={x=1.2,y=1.2}})
+				elseif dist>1000 then
+					e:set_properties({visual_size={x=1,y=1}})
+				elseif dist>500 then
+					e:set_properties({visual_size={x=0.85,y=0.85}})
+				end--else default (0.7)
+				
+				itemstack:take_item()
+			end
+		end
+		return itemstack
+	end,
+})
+
+minetest.register_node("compassgps:cgpsmap_wall",{
+	description = "CompassGPS Map (wallmounted)",
+	drawtype = "nodebox",
+	node_box = { type = "fixed", fixed = {-0.5, -0.5, 7/16, 0.5, 0.5, 0.5} },
+	selection_box = { type = "fixed", fixed = {-0.7, -0.7, 7/16, 0.7, 0.7, 0.7} },
+	tiles = {"compassgps_blank.png"},
+	inventory_image = "cgpsmap_marked.png",
+	wield_image = "cgpsmap_marked.png",
+	paramtype = "light",
+	paramtype2 = "facedir",
+	sunlight_propagates = true,
+	groups = { choppy=2,dig_immediate=2,not_in_creative_inventory=1,not_in_craft_guide=1 },
+	legacy_wallmounted = true,
+	sounds = default.node_sound_defaults(),
+	on_punch = function(pos,node,puncher)
+		if minetest.is_protected(pos,puncher:get_player_name()) then
+			return
+		end
+		local meta = minetest.env:get_meta(pos)
+		local inv = puncher:get_inventory()
+
+		local objs = nil
+		objs = minetest.env:get_objects_inside_radius(pos, .5)
+		if objs then
+			for _, obj in ipairs(objs) do
+				if obj and obj:get_luaentity() and obj:get_luaentity().name == "compassgps:cgpsmap_item" then
+					obj:remove()
+				end
+			end
+		end
+		local itemstack=ItemStack("compassgps:cgpsmap_marked 1")
+		local mapdata=meta:get_string("mapdata")
+		itemstack:set_metadata(mapdata)
+		if inv:room_for_item("main",itemstack) then
+			inv:add_item("main",itemstack)	
+		else
+			minetest.env:add_item(pos, itemstack)
+		end
+		minetest.remove_node(pos)			
+	end,
+})
+
+minetest.register_entity("compassgps:cgpsmap_item",{
+	hp_max = 1,
+	visual="wielditem",
+	visual_size={x=0.7,y=0.7},
+	collisionbox = {0,0,0,0,0,0},
+	physical=false,
+	textures={"compassgps:cgpsmap_marked"},
+})
+
+minetest.register_abm({
+	nodenames = { "compassgps:cgpsmap_wall" },
+	interval = 1,
+	chance = 1,
+	action = function(pos, node, active_object_count, active_object_count_wider)
+		if #minetest.get_objects_inside_radius(pos, 0.5) > 0 then return end
+		local meta=minetest.get_meta(pos)
+		local x=pos.x
+		local y=pos.y
+		local z=pos.z
+		local mapdata=meta:get_string("mapdata",mapdata)
+		if mapdata~=nil then		
+			local data=minetest.deserialize(mapdata)
+			if data~=nil then
+				x=data["x"]
+				y=data["y"]
+				z=data["z"]
+			end
+		end
+		local facedir=node.param2
+		if facedir==1 then
+			pos={x=pos.x+0.3,y=pos.y,z=pos.z}
+		elseif facedir==3 then
+			pos={x=pos.x-0.3,y=pos.y,z=pos.z}
+		elseif facedir==0 then
+			pos={x=pos.x,y=pos.y,z=pos.z+0.3}
+		elseif facedir==2 then
+			pos={x=pos.x,y=pos.y,z=pos.z-0.3}
+		end
+		local e = minetest.env:add_entity(pos,"compassgps:cgpsmap_item")
+		local yaw = math.pi*2 - facedir * math.pi/2
+		e:setyaw(yaw)
+		local dist=math.abs(pos.x-x)+math.abs(pos.y-y)+math.abs(pos.z-z)
+		if dist>30000 then
+			e:set_properties({visual_size={x=3.45,y=3.45}})
+		elseif dist>15000 then
+			e:set_properties({visual_size={x=2.95,y=2.95}})
+		elseif dist>5000 then
+			e:set_properties({visual_size={x=2.45,y=2.45}})
+		elseif dist>3000 then
+			e:set_properties({visual_size={x=1.45,y=1.45}})
+		elseif dist>2000 then
+			e:set_properties({visual_size={x=1.2,y=1.2}})
+		elseif dist>1000 then
+			e:set_properties({visual_size={x=1,y=1}})
+		elseif dist>500 then
+			e:set_properties({visual_size={x=0.85,y=0.85}})
+		end--else default (0.7)
+
 	end
 })
 
@@ -142,5 +304,4 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	end
 
 end)
-
 
