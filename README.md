@@ -95,6 +95,8 @@ You can change the name of the bookmark to whatever you wish, click the "copy bo
 
 To turn a marked map back into a blank map, just put it into the crafting grid.
 
+Thanks to some nice code by Miner59 you can now mount a map on a wall!  If you can dig on the position where the map is placed, you can take the map, otherwise you can add the bookmark saved in the map in your compassgps.  This will make it possible on a multiplayer server to mount maps that everyone can use.
+
 ---------------------
 
 The code is kinda a mess, because I was learning a lot of new things while working on it.  I hope to do a clean up on it sometime in the near future, but I wanted to release it now so some people could start testing it.  Please do not hesitate to offer critiques, criticism, or coding advice.  I'm new to lua and minetest and could use the help.
@@ -104,7 +106,8 @@ And above all, if you run into a bug, please let me know!
 **Credits:**<p>
 Original mod is by Echo and TeTpaAka, and probably PilzAdam.  Cactuz_pl clockmod showed me how to write the hud to the screen.  My son offered a lot of advice and suggested several changes.  I got an example of how to sort lists in lua from Michal Kottman on StackOverflow.  Big thanks to Bas080 and spootonium for providing some very nice alternate images for the compass gps mod!  Also thanks to Topywo for the shared bookmarks idea, and to my son for several ideas, corrections, and testing help.<p>
 Map idea, image, and initial code by TeTpaAka.  Store current position in map code contributed by Miner95<p>
-intllib support by TeTpaAka
+intllib support by TeTpaAka<p>
+Wall mounted maps by Miner59
 
 **License:**<p>
 Original code by Echo, PilzAdam, and TeTpaAka is WTFPL.  My changes are CC0 (No rights reserved)<p>
@@ -121,7 +124,7 @@ PilzAdams Beds mod and the sethome-mod are supported if you have them.
 **Incompatibilities:**<p>
 This mod will clash with both the original compass and compass+ mods.  They should not be installed and enabled at the same time as compassgps.  HOWEVER, compassgps is 100% compatible with the bookmarks file from the compass+ mod.  So if you were using compass+ and switch to compassgps you will NOT lose your previous bookmarks.
 
-**github source:** <p>
+**github source:**<p>
 [https://github.com/Kilarin/compassgps](https://github.com/Kilarin/compassgps)
 
 **Download:**<p>
@@ -136,6 +139,7 @@ If you use this mod, please consider reviewing it on the MineTest Mod Database.<
 [https://forum.minetest.net/mmdb/mod/compassgps/](https://forum.minetest.net/mmdb/mod/compassgps/)
 
 **Changelog:**<p>
+2.4 wall mounted maps by Miner59<p>
 2.3 intllib support by TeTpaTka so CompassGPS will work with different languages now!<p>
 2.2 current position option in bookmark list when writing to map (Miner95 contribution)<p>
 2.1 cgpsmap_marked notincreative and defaults to default on /giveme<p>

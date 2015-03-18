@@ -1,5 +1,11 @@
 --original code for storing bookmarks outside of the compass by TeTpaAka
 --modifications by Kilarin and Miner59
+--wall mounted maps by Miner59
+
+--set growing_wall_maps to true and wall mounted maps will get bigger the further
+--away the target is.
+local growing_wall_maps=false
+
 
 -- Boilerplate to support localized strings if intllib mod is installed.
 local S
@@ -96,7 +102,7 @@ minetest.register_craftitem("compassgps:cgpsmap_marked", {
 		return nil
 	end,
 
-	on_place = function(itemstack, placer, pointed_thing) 
+	on_place = function(itemstack, placer, pointed_thing)
 		if pointed_thing.type=="node" and pointed_thing.above then
 			local pos=pointed_thing.above
 			local ppos=placer:getpos()
@@ -104,13 +110,13 @@ minetest.register_craftitem("compassgps:cgpsmap_marked", {
 			local x=pos.x
 			local y=pos.y
 			local z=pos.z
-			if facedir~=nil and itemstack:get_name()=="compassgps:cgpsmap_marked" 
+			if facedir~=nil and itemstack:get_name()=="compassgps:cgpsmap_marked"
 			   and (not minetest.is_protected(pos,placer:get_player_name())) then
 				minetest.set_node(pos,{name="compassgps:cgpsmap_wall",param2=facedir})
 				local mapdata = itemstack:get_metadata()
 				local meta=minetest.get_meta(pos)
 				meta:set_string("mapdata",mapdata)
-				if mapdata~=nil then		
+				if mapdata~=nil then
 					local data=minetest.deserialize(mapdata)
 					if data~=nil then
 						meta:set_string("infotext", data["bkmrkname"])
@@ -132,7 +138,9 @@ minetest.register_craftitem("compassgps:cgpsmap_marked", {
 				local yaw = math.pi*2 - facedir * math.pi/2
 				e:setyaw(yaw)
 				local dist=math.abs(pos.x-x)+math.abs(pos.y-y)+math.abs(pos.z-z)
-				if dist>30000 then
+				if growing_wall_maps == false then
+					e:set_properties({visual_size={x=0.85,y=0.85}})									
+				elseif dist>30000 then
 					e:set_properties({visual_size={x=3.45,y=3.45}})
 				elseif dist>15000 then
 					e:set_properties({visual_size={x=2.95,y=2.95}})
@@ -147,7 +155,7 @@ minetest.register_craftitem("compassgps:cgpsmap_marked", {
 				elseif dist>500 then
 					e:set_properties({visual_size={x=0.85,y=0.85}})
 				end--else default (0.7)
-				
+
 				itemstack:take_item()
 			end
 		end
@@ -194,11 +202,11 @@ minetest.register_node("compassgps:cgpsmap_wall",{
 		local itemstack=ItemStack("compassgps:cgpsmap_marked 1")
 		itemstack:set_metadata(mapdata)
 		if inv:room_for_item("main",itemstack) then
-			inv:add_item("main",itemstack)	
+			inv:add_item("main",itemstack)
 		else
 			minetest.env:add_item(pos, itemstack)
 		end
-		minetest.remove_node(pos)			
+		minetest.remove_node(pos)
 	end,
 })
 
@@ -222,7 +230,7 @@ minetest.register_abm({
 		local y=pos.y
 		local z=pos.z
 		local mapdata=meta:get_string("mapdata",mapdata)
-		if mapdata~=nil then		
+		if mapdata~=nil then
 			local data=minetest.deserialize(mapdata)
 			if data~=nil then
 				x=data["x"]
