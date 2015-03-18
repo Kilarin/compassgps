@@ -1,4 +1,4 @@
-[b]Compass GPS version 2.3[/b]
+[b]Compass GPS version 2.4[/b]
 This mod creates a customizable compass with user settable bookmarks and shared and admin bookmarks in multiplayer.
 
 Echo created a compass mod back in 2012: [url]https://forum.minetest.net/viewtopic.php?id=3785[/url]
