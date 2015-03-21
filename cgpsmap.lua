@@ -86,8 +86,8 @@ minetest.register_craftitem("compassgps:cgpsmap", {
 
 minetest.register_craftitem("compassgps:cgpsmap_marked", {
 	description = "CompassGPS Map (marked)",
-	inventory_image = "cgpsmap_marked.png",
-	groups = {book = 1},
+	inventory_image = "cgpsmap-marked.png",
+	groups = {not_in_creative_inventory = 1},
 	stack_max = 1,
 
 	on_use = function(itemstack, user, pointed_thing)
