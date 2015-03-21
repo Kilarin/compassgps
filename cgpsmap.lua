@@ -86,8 +86,8 @@ minetest.register_craftitem("compassgps:cgpsmap", {
 
 minetest.register_craftitem("compassgps:cgpsmap_marked", {
 	description = "CompassGPS Map (marked)",
-	inventory_image = "cgpsmap-marked.png",
-	groups = {not_in_creative_inventory = 1},
+	inventory_image = "cgpsmap_marked.png",
+	groups = {book = 1},
 	stack_max = 1,
 
 	on_use = function(itemstack, user, pointed_thing)
@@ -132,22 +132,7 @@ minetest.register_craftitem("compassgps:cgpsmap_marked", {
 				local yaw = math.pi*2 - facedir * math.pi/2
 				e:setyaw(yaw)
 				local dist=math.abs(pos.x-x)+math.abs(pos.y-y)+math.abs(pos.z-z)
-				if dist>30000 then
-					e:set_properties({visual_size={x=3.45,y=3.45}})
-				elseif dist>15000 then
-					e:set_properties({visual_size={x=2.95,y=2.95}})
-				elseif dist>5000 then
-					e:set_properties({visual_size={x=2.45,y=2.45}})
-				elseif dist>3000 then
-					e:set_properties({visual_size={x=1.45,y=1.45}})
-				elseif dist>2000 then
-					e:set_properties({visual_size={x=1.2,y=1.2}})
-				elseif dist>1000 then
-					e:set_properties({visual_size={x=1,y=1}})
-				elseif dist>500 then
-					e:set_properties({visual_size={x=0.85,y=0.85}})
-				end--else default (0.7)
-				
+				meta:set_string("dist",dist)
 				itemstack:take_item()
 			end
 		end
@@ -172,11 +157,9 @@ minetest.register_node("compassgps:cgpsmap_wall",{
 	on_punch = function(pos,node,puncher)
 		local meta = minetest.env:get_meta(pos)
 		local mapdata=meta:get_string("mapdata")
-
 		if minetest.is_protected(pos,puncher:get_player_name()) then
-			--don't take map, instead open formspec to add coordinates in compassgps
 			if mapdata~=nil then
-				read_from_cgpsmap(nil, puncher, minetest.deserialize(mapdata))
+			read_from_cgpsmap(nil, puncher, minetest.deserialize(mapdata))
 			end
 			return
 		end
@@ -209,6 +192,47 @@ minetest.register_entity("compassgps:cgpsmap_item",{
 	collisionbox = {0,0,0,0,0,0},
 	physical=false,
 	textures={"compassgps:cgpsmap_marked"},
+	on_activate = function(self,staticdata)
+		if staticdata~=nil then
+			self.size=tonumber(staticdata)
+		end
+		minetest.after(0.1,function(self,dist)
+			if self.size==nil then
+			local pos=self.object:getpos()
+			pos={x=math.floor(pos.x+0.4),y=math.floor(pos.y+0.4),z=math.floor(pos.z+0.4)}
+				local meta=minetest.get_meta(pos)
+				local dist=meta:get_string("dist")
+				if dist~=nil and dist~="" then		
+					dist=tonumber(dist)
+					if dist>30000 then
+						self.size=3.45
+					elseif dist>15000 then
+						self.size=2.95
+					elseif dist>8000 then
+						self.size=2.45
+					elseif dist>4000 then
+						self.size=1.45
+					elseif dist>2000 then
+						self.size=1.2
+					elseif dist>1000 then
+						self.size=1
+					elseif dist>500 then
+						self.size=0.85
+					else
+						self.size=0.7
+					end
+				end
+			end
+			if self.size~=nil then
+				self.object:set_properties({visual_size={x=self.size,y=self.size}})
+			end
+		end,self,dist)
+	end,
+	get_staticdata = function(self)
+		if self.size==nil then return nil end
+		minetest.log("action",self.size)
+		return tostring(self.size)
+	end
 })
 
 minetest.register_abm({
@@ -217,19 +241,6 @@ minetest.register_abm({
 	chance = 1,
 	action = function(pos, node, active_object_count, active_object_count_wider)
 		if #minetest.get_objects_inside_radius(pos, 0.5) > 0 then return end
-		local meta=minetest.get_meta(pos)
-		local x=pos.x
-		local y=pos.y
-		local z=pos.z
-		local mapdata=meta:get_string("mapdata",mapdata)
-		if mapdata~=nil then		
-			local data=minetest.deserialize(mapdata)
-			if data~=nil then
-				x=data["x"]
-				y=data["y"]
-				z=data["z"]
-			end
-		end
 		local facedir=node.param2
 		if facedir==1 then
 			pos={x=pos.x+0.3,y=pos.y,z=pos.z}
@@ -243,26 +254,8 @@ minetest.register_abm({
 		local e = minetest.env:add_entity(pos,"compassgps:cgpsmap_item")
 		local yaw = math.pi*2 - facedir * math.pi/2
 		e:setyaw(yaw)
-		local dist=math.abs(pos.x-x)+math.abs(pos.y-y)+math.abs(pos.z-z)
-		if dist>30000 then
-			e:set_properties({visual_size={x=3.45,y=3.45}})
-		elseif dist>15000 then
-			e:set_properties({visual_size={x=2.95,y=2.95}})
-		elseif dist>5000 then
-			e:set_properties({visual_size={x=2.45,y=2.45}})
-		elseif dist>3000 then
-			e:set_properties({visual_size={x=1.45,y=1.45}})
-		elseif dist>2000 then
-			e:set_properties({visual_size={x=1.2,y=1.2}})
-		elseif dist>1000 then
-			e:set_properties({visual_size={x=1,y=1}})
-		elseif dist>500 then
-			e:set_properties({visual_size={x=0.85,y=0.85}})
-		end--else default (0.7)
-
 	end
 })
-
 
 minetest.register_on_player_receive_fields(function(player, formname, fields)
 	if (formname == "compassgps:write") then
