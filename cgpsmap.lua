@@ -201,7 +201,7 @@ minetest.register_entity("compassgps:cgpsmap_item",{
 		if staticdata~=nil then
 			self.size=tonumber(staticdata)
 		end
-		minetest.after(0.1,function(self,dist)
+		minetest.after(0.1,function(self)
 			if self.size==nil then
 			local pos=self.object:getpos()
 			pos={x=math.floor(pos.x+0.4),y=math.floor(pos.y+0.4),z=math.floor(pos.z+0.4)}
@@ -231,7 +231,7 @@ minetest.register_entity("compassgps:cgpsmap_item",{
 			if self.size~=nil then
 				self.object:set_properties({visual_size={x=self.size,y=self.size}})
 			end
-		end,self,dist)
+		end,self)
 	end,
 	get_staticdata = function(self)
 		if self.size==nil then return nil end
