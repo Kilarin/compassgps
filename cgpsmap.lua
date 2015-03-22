@@ -1,5 +1,9 @@
 --original code for storing bookmarks outside of the compass by TeTpaAka
 --modifications by Kilarin and Miner59
+--wall mounted maps by Miner59
+--set growing_wall_maps to true and wall mounted maps will get bigger the further
+--away the target is.
+local growing_wall_maps=false
 
 -- Boilerplate to support localized strings if intllib mod is installed.
 local S
@@ -188,11 +192,12 @@ minetest.register_node("compassgps:cgpsmap_wall",{
 minetest.register_entity("compassgps:cgpsmap_item",{
 	hp_max = 1,
 	visual="wielditem",
-	visual_size={x=0.7,y=0.7},
+	visual_size={x=0.85,y=0.85}, --default size
 	collisionbox = {0,0,0,0,0,0},
 	physical=false,
 	textures={"compassgps:cgpsmap_marked"},
 	on_activate = function(self,staticdata)
+		if not growing_wall_maps then return end
 		if staticdata~=nil then
 			self.size=tonumber(staticdata)
 		end
@@ -205,11 +210,11 @@ minetest.register_entity("compassgps:cgpsmap_item",{
 				if dist~=nil and dist~="" then		
 					dist=tonumber(dist)
 					if dist>30000 then
-						self.size=3.45
+						self.size=2.95 --reduced a bit, biggest map covers now ~ 6x6 blocks
 					elseif dist>15000 then
-						self.size=2.95
-					elseif dist>8000 then
 						self.size=2.45
+					elseif dist>8000 then
+						self.size=1.95
 					elseif dist>4000 then
 						self.size=1.45
 					elseif dist>2000 then
@@ -230,7 +235,6 @@ minetest.register_entity("compassgps:cgpsmap_item",{
 	end,
 	get_staticdata = function(self)
 		if self.size==nil then return nil end
-		minetest.log("action",self.size)
 		return tostring(self.size)
 	end
 })
