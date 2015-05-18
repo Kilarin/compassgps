@@ -274,7 +274,7 @@ function compassgps.bookmark_loop(mode,playername,findidx)
       list = compassgps.bookmark_name_pos_dist(spawnbkmrk,playername,playerpos)
       textlist_bkmrks[playername][1]=spawnbkmrk
     end --initialize list
-  	
+
   	--add all spawn position from beds mod, sethome mod and the default spawn point
 	spawnbkmrk=compassgps.get_default_bookmark(playername,2)
 	if spawnbkmrk~=nil then
@@ -472,7 +472,7 @@ minetest.register_on_player_receive_fields(function(player,formname,fields)
 	if bookmarks[textlist_bkmrks[playername][bkmrkidx].player..textlist_bkmrks[playername][bkmrkidx].bkmrkname]==nil then
 		return
 	end
-	
+
       --if they got here, they have authority to del the bookmark, show confirm dialog
       minetest.show_formspec(playername, compassgps.get_confirm_formspec(playername, bkmrkidx))
     elseif fields["find_bookmark"] and textlist_clicked[playername] then
@@ -536,7 +536,7 @@ minetest.register_on_player_receive_fields(function(player,formname,fields)
       if tonumber(fields["hudcolor"],16) then
         hud_color[playername]=fields["hudcolor"]
       else
-        mintest.chat_send_player(playername,S("compassgps: hud color not valid hex number"))
+        minetest.chat_send_player(playername,S("compassgps: hud color not valid hex number"))
       end --if color valid
     elseif fields["compass_type_a"] then
       compass_type[playername]="a"
