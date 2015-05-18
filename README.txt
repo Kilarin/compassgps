@@ -1,4 +1,4 @@
-[b]Compass GPS version 2.5[/b]
+[b]Compass GPS version 2.6[/b]
 This mod creates a customizable compass with user settable bookmarks and shared and admin bookmarks in multiplayer.
 
 Echo created a compass mod back in 2012: [url]https://forum.minetest.net/viewtopic.php?id=3785[/url]
@@ -138,7 +138,8 @@ If you use this mod, please consider reviewing it on the MineTest Mod Database.
 [url]https://forum.minetest.net/mmdb/mod/compassgps/[/url]
 
 [b]Changelog:[/b]
-2.5 bug fix from myoung008, type causing crashes when entering bad color.
+2.6 bug fix from myoung008, type causing crashes when entering bad color.
+2.5 bug fix from TeTpaAka fix bug when static_spawnpoint is invalid
 2.4 wall mounted maps by Miner59
 2.3 intllib support by TeTpaTka so CompassGPS will work with different languages now!
 2.2 current position option in bookmark list when writing to map (Miner95 contribution)
