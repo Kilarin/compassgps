@@ -860,17 +860,10 @@ minetest.register_chatcommand("find_bookmark", {
 
 
 
--- default to 0/0/0
-local default_spawn = {x=0, y=0, z=0}
--- default to static spawnpoint (overwrites 0/0/0)
-local default_spawn_settings = minetest.setting_get("static_spawnpoint")
-if (default_spawn_settings) then
-	pos1 = string.find(default_spawn_settings, ",", 0)
-	default_spawn.x = tonumber(string.sub(default_spawn_settings, 0, pos1 - 1))
-	pos2 = string.find(default_spawn_settings, ",", pos1 + 1)
-	default_spawn.y = tonumber(string.sub(default_spawn_settings, pos1 + 1, pos2 - 1))
-	default_spawn.z = tonumber(string.sub(default_spawn_settings, pos2 + 1))
-end
+-- default to static spawnpoint
+local static_spawnpoint = minetest.setting_get_pos("static_spawnpoint")
+-- default to 0/0/0 if spawnpoint is not present or invalid
+local default_spawn = static_spawnpoint or {x=0, y=0, z=0}
 
 local last_time_spawns_read = "default"
 local beds_spawns = {}
