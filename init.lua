@@ -65,6 +65,13 @@ print(S("compassgps reading bookmarks"))
 local file = io.open(minetest.get_worldpath().."/bookmarks", "r")
 if file then
 	bookmarks = minetest.deserialize(file:read("*all"))
+  -- check if it was an empty file because empty files can crash server
+	if bookmarks == nil then 
+	  print("compassgps:ERROR:bookmarks file exists but is empty, will recreate")
+		print("compassgps: this will stop the server from crashing, but bookmarks are lost")
+		print("compassgps: please restore "..minetest.get_worldpath().."/bookmarks from a backup if possible")
+	  bookmarks = { }
+	end 
 	file:close()
 end
 
@@ -138,6 +145,11 @@ local settings = { }
 local file = io.open(minetest.get_worldpath().."/compassgps_settings", "r")
 if file then
 	settings = minetest.deserialize(file:read("*all"))
+  -- check if it was an empty file because empty files can crash server
+	if settings == nil then 
+	  print("compassgps:ERROR:compassgps_setting file exists but is empty, will recreate")
+	  settings = { }
+	end 
 	file:close()
 end
 --now transfer these to the correct variables
