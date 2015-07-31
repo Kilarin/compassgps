@@ -1,4 +1,4 @@
---compassgps 2.1
+--compassgps 2.7
 
 --This fork was written by Kilarin (Donald Hines)
 --Original code by Echo, PilzAdam, and TeTpaAka is WTFPL.
