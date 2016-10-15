@@ -25,7 +25,7 @@ end
 local hud_default_x=0.4
 local hud_default_y=0.01
 local hud_default_color="FFFF00"
-local compass_default_type="a"
+local compass_default_type="c"
 local compass_valid_types={"a","b","c"}
 local activewidth=8 --until I can find some way to get it from minetest
 local max_shared=10 --how many shared bookmarks a user with shared_bookmarks priv can make.
@@ -402,7 +402,10 @@ function compassgps.get_confirm_formspec(playername,bkmrkidx)
   local bkmrk=textlist_bkmrks[playername][bkmrkidx]
 
 	return "compassgps:confirm_remove", "size[8,2;]"..
-    "label[0,0.2;"..S("Remove bookmark: ")..compassgps.bookmark_name_string(bkmrk).." ?]"..
+	default.gui_bg..
+	default.gui_bg_img..
+	default.gui_slots..
+    "label[0,0.2;"..S("Remove: ")..compassgps.bookmark_name_string(bkmrk).." ?]"..
 		"button[0,0.7;4,1;confirm_remove_yes;"..S("Yes").."]"..
     "button[4,0.7;4,1;confirm_remove_no;"..S("No").."]"
 end
@@ -1210,41 +1213,44 @@ function compassgps.get_compassgps_formspec(name)
   end
   local telebutton=""
   if player_privs["teleport"] then
-    telebutton="button[4,9.3;3,1;teleport;"..S("teleport to bookmark").."]"
+    telebutton="button[6,9.3;3,1;teleport;"..S("teleport to bookmark").."]"
   end
   local sharedbutton=""
   if player_privs["shared_bookmarks"] and not singleplayer then
-    sharedbutton="button[2.3,0.7;2.3,1;new_shared_bookmark;"..S("create shared").."]"
+    sharedbutton="button[2.4,0.7;2.2,1;new_shared_bookmark;"..S("create shared").."]"
   end
   local adminbutton=""
   if player_privs["privs"] and not singleplayer then
-    adminbutton="button[4.6,0.7;2.3,1;new_admin_bookmark;"..S("create admin").."]"
+    adminbutton="button[4.5,0.7;2.1,1;new_admin_bookmark;"..S("create admin").."]"
   end
 
   local checkboxes=""
   if not singleplayer then
-    checkboxes="label[3.65,1.75;"..S("Show:").."]"..
-    "checkbox[4.35,1.4;show_private;"..S("Private")..";"..view_type_P[name].."]"..
-    "checkbox[4.35,1.7;show_shared;"..S("Shared")..";"..view_type_S[name].."]"..
-    "checkbox[4.35,2.0;show_admin;"..S("Admin")..";"..view_type_A[name].."]"
+    checkboxes="label[3.85,1.75;"..S("Show:").."]"..
+    "checkbox[7.55,1.4;show_private;"..S("Private")..";"..view_type_P[name].."]"..
+    "checkbox[7.55,1.7;show_shared;"..S("Shared")..";"..view_type_S[name].."]"..
+    "checkbox[7.55,2.0;show_admin;"..S("Admin")..";"..view_type_A[name].."]"
   end
 
   return "compassgps:bookmarks", "size[9,10;]"..
-    "field[0,0.2;5,1;bookmark;"..S("bookmark")..":;]"..
-    "button[5.5,0;2.25,0.8;settings;"..S("Settings").."]"..
-    "button[0,0.7;2.3,1;new_bookmark;"..S("create bookmark").."]"..
+    default.gui_bg..
+    default.gui_bg_img..
+    default.gui_slots..
+    "field[0.3,0.2;5,1;bookmark;"..S("bookmark name")..":;]"..
+    "button[6.5,0;2.25,0.8;settings;"..S("Settings").."]"..
+    "button[0,0.7;2.5,1;new_bookmark;"..S("Create bookmark").."]"..
     sharedbutton..
     adminbutton..
-    "button[6.9,0.7;2.4,1;remove_bookmark;"..S("remove bookmark").."]"..
+    "button[6.5,0.7;2.5,1;remove_bookmark;"..S("Remove bookmark").."]"..
     "label[0,1.75;"..S("Sort by:").."]"..
     "textlist[1,1.75;1.2,1;sort_type;"..S("name")..","..S("distance")..";"..sortdropdown.."]"..
     "label[2.4,1.75;"..S("Dist:").."]"..
     "textlist[3,1.75;.5,1;distance_type;3d,2d;"..distdropdown.."]"..
     checkboxes..
-    "textlist[0,3.0;9,6;bookmark_list;"..list..";"..bkmrkidx.."]"..
-    "button[0,9.3;3,1;find_bookmark;"..S("find selected bookmark").."]"..
+    "textlist[0,3.0;8.8,6;bookmark_list;"..list..";"..bkmrkidx.."]"..
+    "button[0,9.3;3.3,1;find_bookmark;"..S("Show selected bookmark").."]"..
     telebutton
-
+    
 end --get_compassgps_formspec
 
 
@@ -1253,6 +1259,9 @@ function compassgps.get_settings_formspec(name)
   local player = minetest.get_player_by_name(name)
 
   return "compassgps:settings", "size[8,4;]"..
+    default.gui_bg..
+    default.gui_bg_img..
+    default.gui_slots..
     "button[1,0.2;2.25,1;hud_pos;"..S("Change hud:").."]"..
     "field[3.6,0.5;1.2,1;hudx;X:("..hud_default_x..");"..hud_pos[name].x.."]"..
     "field[4.8,0.5;1.2,1;hudy;Y:("..hud_default_y..");"..hud_pos[name].y.."]"..

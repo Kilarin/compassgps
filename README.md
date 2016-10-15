@@ -1,6 +1,6 @@
 This mod creates a customizable compass with user settable bookmarks and shared and admin bookmarks in multiplayer.
 
-**Compass GPS version 2.7**
+**Compass GPS version 2.7 fork 1**
 
 Echo created a compass mod back in 2012: [https://forum.minetest.net/viewtopic.php?id=3785](https://forum.minetest.net/viewtopic.php?id=3785)<p>
 PilzAdams made a modification of it, which I can not find the source to, I don't know how much of PilzAdams changes made it into the later versions of Echo's mod.<p>
@@ -139,6 +139,7 @@ If you use this mod, please consider reviewing it on the MineTest Mod Database.<
 [https://forum.minetest.net/mmdb/mod/compassgps/](https://forum.minetest.net/mmdb/mod/compassgps/)
 
 **Changelog:**<p>
+2.7 fork 1 HUD fixes
 2.7 bug fix: in a catastrophic server crash, compassgps_settings or bookmarks file could exist, but be empty.  When the file exists but is empty, the table it is loaded into ends up as nil instead of empty and that causes the server to crash on startup.  NOT GOOD!  With bug fix, if file exists but is empty, server will start but not crash and new contents for empty file will be created.  a message will appear in the debug informing server owner to restore bookmarks from backup if possible.<p>
 2.6 bug fix from myoung008, type causing crashes when entering bad color.<p>
 2.5 bug fix from TeTpaAka fix bug when static_spawnpoint is invalid<p>
