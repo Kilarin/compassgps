@@ -1035,7 +1035,7 @@ minetest.register_globalstep(function(dtime)
       point_to[playername]=point_to[playername] or compassgps.get_default_bookmark(playername,1)
       target=point_to[playername] --just to take up less space
       pos = player:getpos()
-      dir = player:get_look_yaw()
+      dir = player:get_look_horizontal()
       local angle_north = math.deg(math.atan2(target.x - pos.x, target.z - pos.z))
       if angle_north < 0 then angle_north = angle_north + 360 end
       local angle_dir = 90 - math.deg(dir)
