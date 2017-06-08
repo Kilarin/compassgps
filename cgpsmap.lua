@@ -134,7 +134,7 @@ minetest.register_craftitem("compassgps:cgpsmap_marked", {
 				elseif facedir==2 then
 					pos={x=pos.x,y=pos.y,z=pos.z-0.3}
 				end
-				local e = minetest.env:add_entity(pos,"compassgps:cgpsmap_item")
+				local e = minetest.add_entity(pos,"compassgps:cgpsmap_item")
 				local yaw = math.pi*2 - facedir * math.pi/2
 				e:setyaw(yaw)
 				local dist=math.abs(pos.x-x)+math.abs(pos.y-y)+math.abs(pos.z-z)
@@ -178,7 +178,7 @@ minetest.register_node("compassgps:cgpsmap_wall",{
 	legacy_wallmounted = true,
 	sounds = default.node_sound_defaults(),
 	on_punch = function(pos,node,puncher)
-		local meta = minetest.env:get_meta(pos)
+		local meta = minetest.get_meta(pos)
 		local mapdata=meta:get_string("mapdata")
 
 		if minetest.is_protected(pos,puncher:get_player_name()) then
@@ -191,7 +191,7 @@ minetest.register_node("compassgps:cgpsmap_wall",{
 		local inv = puncher:get_inventory()
 
 		local objs = nil
-		objs = minetest.env:get_objects_inside_radius(pos, .5)
+		objs = minetest.get_objects_inside_radius(pos, .5)
 		if objs then
 			for _, obj in ipairs(objs) do
 				if obj and obj:get_luaentity() and obj:get_luaentity().name == "compassgps:cgpsmap_item" then
@@ -204,7 +204,7 @@ minetest.register_node("compassgps:cgpsmap_wall",{
 		if inv:room_for_item("main",itemstack) then
 			inv:add_item("main",itemstack)
 		else
-			minetest.env:add_item(pos, itemstack)
+			minetest.add_item(pos, itemstack)
 		end
 		minetest.remove_node(pos)
 	end,
@@ -248,7 +248,7 @@ minetest.register_abm({
 		elseif facedir==2 then
 			pos={x=pos.x,y=pos.y,z=pos.z-0.3}
 		end
-		local e = minetest.env:add_entity(pos,"compassgps:cgpsmap_item")
+		local e = minetest.add_entity(pos,"compassgps:cgpsmap_item")
 		local yaw = math.pi*2 - facedir * math.pi/2
 		e:setyaw(yaw)
 		local dist=math.abs(pos.x-x)+math.abs(pos.y-y)+math.abs(pos.z-z)
