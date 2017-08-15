@@ -14,13 +14,11 @@
 --added pos and distance to display list
 --added hud showing current pos -> target pos : distance
 
--- Boilerplate to support localized strings if intllib mod is installed.
-local S
-if (minetest.get_modpath("intllib")) then
-  S = intllib.Getter()
-else
-  S = function ( s ) return s end
-end
+local modpath = minetest.get_modpath("compassgps")
+
+-- internationalization boilerplate
+local S, NS = dofile(modpath.."/intllib.lua")
+
 
 local hud_default_x=0.4
 local hud_default_y=0.01

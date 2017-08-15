@@ -1,0 +1,63 @@
+  bkmrkidx\=nil = bkmrkidx\=nil
+  playername\=%s = playername\=%s
+  playername\=nil = playername\=nil
+%s's map = Карта %s
+A bookmark with the name '%s' can't be created. = Невозможно создать закладку с названием '%s'.
+Admin = Администратор
+Bookmark '%s' added at %s type\=%s = Закладка '%s' была создана %s с типом %s.
+Change hud: = Изменить HUD:
+Color: = Цвет:
+Dist: = Дистанция:
+Compass Type: = Тип компаса:
+Give the bookmark a name. = Укажите название закладки
+Lets the compassgps point to the bookmark = Позволить компасу указывать на закладку.
+No = Нет
+No bookmark was specified. = Не указано ни одной закладки.
+Pointing at %s. = Указание на %s.
+Pointing at default location. = Указание на мето по умолчанию.
+Private = Личное
+Remove bookmark:  = Удалить закладку:
+Removes the bookmark specified by <bookmark_name> = Удаляет закладу, указанную, как <bookmark_name>.
+Settings = Настройки
+Shared = Общее
+Show: = Показать:
+Sort by: = Сортировка по:
+Teleporting to %s = Телепортироваться в %s
+The bookmark  = Закладка
+The maximum number of shared bookmarks any user can create is %d. = Максимальное количество общих закладок, которые пользователи могут создать, равно  %d.
+Yes = Да
+You already have a bookmark with that name. = У вас уже есть закладка с таким названием.
+You have no bookmark with this name. = У вас нет закладок с таким именем.
+bookmark = закладка
+compassgps reading bookmarks = compassgps считывает закладки.
+compassgps reading settings = compassgps считывает настройки.
+compassgps = Компас
+compassgps teleporting player %s to %s = compassgps телепортирует игрока %s в %s.
+compassgps writing settings = compassgps записывает настройки.
+compassgps.%s invalid bkrmkidx = compassgps.%s неверный bkmrkidx.
+compassgps.%s invalid bookmark playername\=%s bkmrkid\=%s = compassgps.%s неверная закладка. игрок\=%s bkmrkidx\=%s.
+compassgps.%s player not found = compassgps.%s игрок не найден.
+compassgps: hud color not valid hex number = compassgps: неверный HEX-номер цвета HUD.
+compassgps: hud coords are not numeric.  Change to between 0 and 1 = compassgps: нечисловые координаты HUD. Значение должно быть между 0 и 1.
+compassgps: hud coords out of range, hud will not be displayed.  Change to between 0 and 1 to restore = compassgps: координаты HUD указаны за пределами диапазона, HUD не будет отображён. Значение должно быть между 0 и 1.
+compassgps:%s invalid bookmark = compassgps.%s неверная закладка
+create admin = Создать администратора
+create bookmark = Создать закладку
+create shared = Создать общую закладку
+current position :  = Текущая позиция : 
+distance = Дистанция
+find selected bookmark = Найти выбранную закладку
+list_bookmarks: Lists all bookmarks of a player = list_bookmarks: Вывести список всех закладок игрока.
+name = Имя
+remove bookmark = Удалить закладку
+remove bookmark playername\=%s bkmrkidx\=%s = Удаление закладки. Игрок\=%s bkmrkidx\=%s
+removed %s = %s удалена.
+set_bookmark: Sets a location bookmark for the player = set_bookmark: Устанавливает закладку на местонахождение для пользователя.
+teleport to bookmark = Телепортироваться к закладке.
+you can not remove someone elses bookmark: = Вы не можете удалить чужую закладку: 
+CompassGPS Map (blank) = Карта CompassGPS (чистая)
+CompassGPS Map (marked) = Карта CompassGPS (с отметками)
+Write to cgpsmap = Записать в карту
+copy bookmark to your compassgps = Скопировать закладку в свой компас.
+bookmark name: = Название закладки: 
+bookmark pos: = Позиция закладки:
