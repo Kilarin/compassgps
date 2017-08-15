@@ -14,6 +14,8 @@
 --added pos and distance to display list
 --added hud showing current pos -> target pos : distance
 
+local modpath = minetest.get_modpath("compassgps")
+
 -- internationalization boilerplate
 local S, NS = dofile(modpath.."/intllib.lua")
 
