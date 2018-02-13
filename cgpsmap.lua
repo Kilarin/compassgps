@@ -9,9 +9,13 @@ local growing_wall_maps=false
 
 -- Boilerplate to support localized strings if intllib mod is installed.
 local S
-if (minetest.get_modpath("intllib")) then
+if (minetest.global_exists("intllib")) then
   dofile(minetest.get_modpath("intllib").."/intllib.lua")
-  S = intllib.Getter(minetest.get_current_modname())
+  if (intllib.make_gettext_pair) then
+    S = intllib.make_gettext_pair(minetest.get_current_modname())
+  else
+    S = intllib.Getter(minetest.get_current_modname())
+  end
 else
   S = function ( s ) return s end
 end
