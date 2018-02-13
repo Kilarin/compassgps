@@ -30,6 +30,9 @@ function write_to_cgpsmap(itemstack, user)
 	end
 	textlist_bookmark[user:get_player_name()] = list
 	local formspec = "size[9,10;]"..
+			default.gui_bg..
+			default.gui_bg_img..
+			default.gui_slots..
 			"button_exit[2,2;5,0.5;write;"..S("Write to cgpsmap").."]"..
 			"textlist[0,3.0;9,6;bookmark_list;"..list..";"..bkmrkidx.."]"
 	minetest.show_formspec(user:get_player_name(), "compassgps:write", formspec)
@@ -40,9 +43,12 @@ end
 function read_from_cgpsmap(itemstack, user, meta)
   --print("read_from_cgpsmap")
 	local formspec = "size[9,5]"..
-			"button_exit[2,3;5,0.5;read;"..S("copy bookmark to your compassgps").."]"
+			default.gui_bg..
+			default.gui_bg_img..
+			default.gui_slots..
+			"button_exit[3,3;4,0.5;read;"..S("Copy bookmark to compassgps").."]"
 	if itemstack~=nil then
-		formspec=formspec.. "button_exit[3.1,4;2.6,0.8;rename;"..S("rename bookmark").."]"
+		formspec=formspec.. "button_exit[3.1,4;2.6,0.8;rename;"..S("Rename bookmark").."]"
 	else
 	    itemstack=ItemStack("compassgps:cgpsmap_marked 1")
 	    if meta then
@@ -55,8 +61,8 @@ function read_from_cgpsmap(itemstack, user, meta)
 	end
 	selected_cgpsmap[user:get_player_name()] = itemstack
 
-      formspec=formspec.."label[2,0.5;"..S("bookmark pos:").." ("..meta["x"]..","..meta["y"]..","..meta["z"]..")]"..
-	      "field[2,2;5,0.5;name;"..S("bookmark name:")..";"..meta["bkmrkname"].."]"
+      formspec=formspec.."label[2,0.5;"..S("Bookmark pos:").." ("..meta["x"]..","..meta["y"]..","..meta["z"]..")]"..
+	      "field[2,2;5,0.5;name;"..S("Bookmark name:")..";"..meta["bkmrkname"].."]"
 	minetest.show_formspec(user:get_player_name(), "compassgps:read", formspec)
   --print("read_from_cgpsmap end")
 end
