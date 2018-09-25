@@ -20,7 +20,7 @@ TeTpaAka's gui, file io, and coding for multiplayer games was simply amazing.  B
   * tried to follow Echo and TeTpaAka's examples of how to properly code for multiplayer games, and all of the new settings should work just fine in a multiplayer game.
   * shared and admin bookmarks
   * made maps based on TeTpaAka's code
-  * see changelog for later changes
+  * see changelog for more!
 
 ![alt text](http://i59.tinypic.com/a15ls0.png "image")
 
