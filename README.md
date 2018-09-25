@@ -9,13 +9,17 @@ TeTpaAka's gui, file io, and coding for multiplayer games was simply amazing.  B
 
 
 ## Previous Forks
-**Echo** created a compass mod back in 2012: [https://forum.minetest.net/viewtopic.php?id=3785](https://forum.minetest.net/viewtopic.php?id=3785)
+### Echo
+created a compass mod back in 2012: [https://forum.minetest.net/viewtopic.php?id=3785](https://forum.minetest.net/viewtopic.php?id=3785)
 * Echo managed to make the compass in your inventory actually change it's image to point in the direction of it's target.
-**PilzAdam**'s fork was lost, and the amount of code that merged back into Echo's is unknown.<br/>
-**TeTpaAka** (2013) made a fork of the compass mod called compass+ [https://forum.minetest.net/viewtopic.php?id=8117](https://forum.minetest.net/viewtopic.php?id=8117)
+### PilzAdam
+fork was lost, and the amount of code that merged back into Echo's is unknown.<br/>
+### TeTpaAka
+(2013) made a fork of the compass mod called compass+ [https://forum.minetest.net/viewtopic.php?id=8117](https://forum.minetest.net/viewtopic.php?id=8117)
 * added bookmarks via chat commands
 * added some type of GUI, file IO, and multiplayer considerations
-**Kilarin**'s fork added the ability to bookmark specific places, and a gui so you could choose what point the compass should point to:
+### Kilarin
+fork added the ability to bookmark specific places, and a gui so you could choose what point the compass should point to:
 * this fork was renamed CompassGPS
 * fixed a few bugs while I was working on this.  There was a problem in the mod that caused compass to jump around in inventory if there were empty slots above it, that is fixed now.  And there was also a problem with the bookmark list not being saved after you removed a bookmark if you didn't add a new bookmark afterwards.  Now the bookmark list is saved whenever you change it, either adding or removing.
 * tried to follow Echo and TeTpaAka's examples of how to properly code for multiplayer games, and all of the new settings should work just fine in a multiplayer game.
