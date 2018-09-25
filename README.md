@@ -1,19 +1,29 @@
+# compassgps
 This mod creates a customizable compass with user settable bookmarks and shared and admin bookmarks in multiplayer.
 
-**Compass GPS version 2.7 fork 1**
+**Compass GPS version 2.7 fork 1** (Kilarin's fork)
 
-Echo created a compass mod back in 2012: [https://forum.minetest.net/viewtopic.php?id=3785](https://forum.minetest.net/viewtopic.php?id=3785)<p>
-PilzAdams made a modification of it, which I can not find the source to, I don't know how much of PilzAdams changes made it into the later versions of Echo's mod.<p>
-Then in 2013 TeTpaAka made a fork of the compass mod that he called compass+ [https://forum.minetest.net/viewtopic.php?id=8117](https://forum.minetest.net/viewtopic.php?id=8117)<p>
-This fork added the ability to "bookmark" specific places, and a gui so you could choose what point the compass should point to.
 
-This is my fork of TeTpaAka's fork of Echo's mod. :)
+TeTpaAka's gui, file io, and coding for multiplayer games was simply amazing.  But as I was learning from their awesome code, I saw some changes I'd like to make using these new ideas, as well as some things I learned while looking at other mods.  So, with complete and total respect for the original awesome mods, and hopefully in the same spirit as theirs, I present my own fork of the fork.  CompassGPS
 
-The compass mod as it was is REALLY cool  I love the way Echo managed to make the compass in your inventory actually change it's image to point in the direction of it's target
+
+**Previous Forks**<br/>
+* Echo created a compass mod back in 2012: [https://forum.minetest.net/viewtopic.php?id=3785](https://forum.minetest.net/viewtopic.php?id=3785)
+  * Echo managed to make the compass in your inventory actually change it's image to point in the direction of it's target.
+* PilzAdam's fork was lost, and the amount of code that merged back into Echo's is unknown.<br/>
+* TeTpaAka made a fork (2013) of the compass mod called compass+ [https://forum.minetest.net/viewtopic.php?id=8117](https://forum.minetest.net/viewtopic.php?id=8117)
+  * added bookmarks via chat commands
+  * added some type of GUI, file IO, and multiplayer considerations
+* Kilarin fork adds the ability to bookmark named targets, and a GUI so you could choose the compass' target:
+  * this fork was renamed CompassGPS
+  * fixed a few bugs while I was working on this.  There was a problem in the mod that caused compass to jump around in inventory if there were empty slots above it, that is fixed now.  And there was also a problem with the bookmark list not being saved after you removed a bookmark if you didn't add a new bookmark afterwards.  Now the bookmark list is saved whenever you change it, either adding or removing.
+  * tried to follow Echo and TeTpaAka's examples of how to properly code for multiplayer games, and all of the new settings should work just fine in a multiplayer game.
+  * shared and admin bookmarks
+  * made maps based on TeTpaAka's code
+  * see changelog for more!
 
 ![alt text](http://i59.tinypic.com/a15ls0.png "image")
 
-And TeTpaAka's gui, file io, and coding for multiplayer games was simply amazing.  But as I was learning from their awesome code, I saw some changes I'd like to make using these new ideas, as well as some things I learned while looking at other mods.  So, with complete and total respect for the original awesome mods, and hopefully in the same spirit as theirs, I present my own fork of the fork.  CompassGPS
 
 The crafting recipe for a compass is unchanged:<p>
 ```
@@ -29,7 +39,7 @@ Compass GPS introduces several other changes though.  First of all, this mod add
 
 The hud updates constantly as long as the compass is in one of your active inventory slots, so you can always know where you are in relation to the target node, and how far away it is.
 
-There is a GUI that pops up whenever you wield the compass and left click.  I never played with a GUI in minetest before, so this was a new experience for me, I learned a lot and made quite a few changes:
+There is a GUI that pops up whenever you wield the compass and left click.  I never played with a GUI in minetest before, so this was a new experience for me, I learned a lot and made quite a few changes -Kilarin:
 
 ![alt text](http://i61.tinypic.com/29zzgy1.png "image")
 
@@ -48,7 +58,7 @@ If you click the "Settings" button in the upper right hand corner it brings up a
 ![alt text](http://i59.tinypic.com/aahqa8.png "image")<p>
 (The two awesome new compass images are by Bas080 and Spootonium)
 
-I figured the position of the hud text was likely to be something that people would want to customize, so here in the settings gui are the x and y coords for the hud text.  Just enter the new coords where you want the hud text to appear and click "Change Hud"<p>
+In the settings gui are the x and y coords to customize the position of the hud text.  Just enter the new coords where you want the hud text to appear and click "Change Hud"<p>
 The cords must be between 0 and 1 and represent a percentage of the screen, so x=0 would put the text at the far left of the screen, and y=0.98 would put the text almost at the bottom of the screen.  The default is x=0.4 and y=0.01, and that is displayed right over the input boxes so the user can easily set them back to the default if they are having trouble placing the hud. If you change either the x or y coord to a number that is out of range (less than 0 or greater than 1) then the hud will not be displayed.  That makes it easy to turn the hud off if you wish.<p>
 You can also change the color of the hud text by changing the value in the "Color" field here.  Again, click "Change Hud" to make the update appear.
 
@@ -70,9 +80,6 @@ set_bookmark <bookmark name><p>
 find_bookmark <bookmark name><p>
 remove_bookmark <bookmark name>
 
-I also fixed a few bugs while I was working on this.  There was a problem in the mod that caused compass to jump around in inventory if there were empty slots above it, that is fixed now.  And there was also a problem with the bookmark list not being saved after you removed a bookmark if you didn't add a new bookmark afterwards.  Now the bookmark list is saved whenever you change it, either adding or removing.
-
-I tried to follow Echo and TeTpaAka's examples of how to properly code for multiplayer games, and all of the new settings should work just fine in a multiplayer game.
 
 ----** MAPS! **----
 
@@ -101,15 +108,21 @@ Thanks to some nice code by Miner59 you can now mount a map on a wall!  If you c
 
 The code is kinda a mess, because I was learning a lot of new things while working on it.  I hope to do a clean up on it sometime in the near future, but I wanted to release it now so some people could start testing it.  Please do not hesitate to offer critiques, criticism, or coding advice.  I'm new to lua and minetest and could use the help.
 
-And above all, if you run into a bug, please let me know!
+Please report bugs to the maintainer, which for the Kilarin fork can be done at: <https://github.com/Kilarin/compassgps/issues>
 
-**Credits:**<p>
-Original mod is by Echo and TeTpaAka, and probably PilzAdam.  Cactuz_pl clockmod showed me how to write the hud to the screen.  My son offered a lot of advice and suggested several changes.  I got an example of how to sort lists in lua from Michal Kottman on StackOverflow.  Big thanks to Bas080 and spootonium for providing some very nice alternate images for the compass gps mod!  Also thanks to Topywo for the shared bookmarks idea, and to my son for several ideas, corrections, and testing help.<p>
-Map idea, image, and initial code by TeTpaAka.  Store current position in map code contributed by Miner95<p>
-intllib support by TeTpaAka<p>
-Wall mounted maps by Miner59
+## Credits
+Kilarin's fork:
+* Original mod is by Echo and TeTpaAka, and probably PilzAdam (see Previous Forks above for details).
+* write hud to screen: based on Cactuz_pl clockmod
+* Kilarin credits his son who offered a lot of advice and testing, and suggested several changes and corrections.
+* sort lists in lua: Michal Kottman on StackOverflow
+* Big thanks to Bas080 and spootonium for providing some very nice alternate images for the compass gps mod!
+* Also thanks to Topywo for the shared bookmarks idea
+* Map idea, image, and initial code by TeTpaAka.  Store current position in map code contributed by Miner95<p>
+* intllib support by TeTpaAka
+* Wall mounted maps by Miner59
 
-**License:**<p>
+## License
 Original code by Echo, PilzAdam, and TeTpaAka is WTFPL.  My changes are CC0 (No rights reserved)<p>
 textures: original compass textures: CC BY-SA by Echo<p>
           compass b textures: CC BY-SA by Bas080 (slight modifications by Kilarin)<p>
@@ -117,17 +130,17 @@ textures: original compass textures: CC BY-SA by Echo<p>
                               (slight modifications by Kilarin)<p>
           map texture: CC BY-SA by TeTpaAka (slight modifications by Kilarin for blank map)
 
-**Dependencies:**<p>
+## Dependencies
 default is the only requirement.<p>
 PilzAdams Beds mod and the sethome-mod are supported if you have them.
 
-**Incompatibilities:**<p>
+## Incompatibilities
 This mod will clash with both the original compass and compass+ mods.  They should not be installed and enabled at the same time as compassgps.  HOWEVER, compassgps is 100% compatible with the bookmarks file from the compass+ mod.  So if you were using compass+ and switch to compassgps you will NOT lose your previous bookmarks.
 
-**github source:**<p>
+## GitHub source
 [https://github.com/Kilarin/compassgps](https://github.com/Kilarin/compassgps)
 
-**Download:**<p>
+## Download
 [https://github.com/Kilarin/compassgps/archive/master.zip](https://github.com/Kilarin/compassgps/archive/master.zip)
 
 **To install:**<p>
