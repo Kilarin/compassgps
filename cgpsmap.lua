@@ -10,14 +10,14 @@ local growing_wall_maps=false
 -- Boilerplate to support localized strings if intllib mod is installed.
 local S
 if (minetest.global_exists("intllib")) then
-  dofile(minetest.get_modpath("intllib").."/intllib.lua")
-  if (intllib.make_gettext_pair) then
-    S = intllib.make_gettext_pair(minetest.get_current_modname())
-  else
-    S = intllib.Getter(minetest.get_current_modname())
-  end
+	dofile(minetest.get_modpath("intllib").."/intllib.lua")
+	if (intllib.make_gettext_pair) then
+		S = intllib.make_gettext_pair(minetest.get_current_modname())
+	else
+		S = intllib.Getter(minetest.get_current_modname())
+	end
 else
-  S = function ( s ) return s end
+	S = function ( s ) return s end
 end
 
 
@@ -26,7 +26,7 @@ local textlist_bookmark = {}
 local selected_bookmark = {}
 
 function write_to_cgpsmap(itemstack, user)
-  --print("write_to_cgpsmap")
+	--print("write_to_cgpsmap")
 	selected_cgpsmap[user:get_player_name()] = itemstack
 	local list,bkmrkidx=compassgps.bookmark_loop("M", user:get_player_name())
 	if list == "" then
@@ -40,12 +40,12 @@ function write_to_cgpsmap(itemstack, user)
 			"button_exit[2,2;5,0.5;write;"..S("Write to cgpsmap").."]"..
 			"textlist[0,3.0;9,6;bookmark_list;"..list..";"..bkmrkidx.."]"
 	minetest.show_formspec(user:get_player_name(), "compassgps:write", formspec)
-  --print("write_to_cgpsmap end")
+	--print("write_to_cgpsmap end")
 end
 
 
 function read_from_cgpsmap(itemstack, user, meta)
-  --print("read_from_cgpsmap")
+	--print("read_from_cgpsmap")
 	local formspec = "size[9,5]"..
 			default.gui_bg..
 			default.gui_bg_img..
@@ -54,21 +54,21 @@ function read_from_cgpsmap(itemstack, user, meta)
 	if itemstack~=nil then
 		formspec=formspec.. "button_exit[3.1,4;2.6,0.8;rename;"..S("Rename bookmark").."]"
 	else
-	    itemstack=ItemStack("compassgps:cgpsmap_marked 1")
-	    if meta then
-		itemstack:set_metadata(minetest.serialize(meta))
-	    end
+		itemstack=ItemStack("compassgps:cgpsmap_marked 1")
+		if meta then
+			itemstack:set_metadata(minetest.serialize(meta))
+		end
 	end
 	if not meta then  --marked map from creative or /giveme has no meta!
-	    meta={bkmrkname="default",x=0,y=0,z=0}
+		meta={bkmrkname="default",x=0,y=0,z=0}
 		itemstack:set_metadata(minetest.serialize(meta))
 	end
 	selected_cgpsmap[user:get_player_name()] = itemstack
 
-      formspec=formspec.."label[2,0.5;"..S("Bookmark pos:").." ("..meta["x"]..","..meta["y"]..","..meta["z"]..")]"..
-	      "field[2,2;5,0.5;name;"..S("Bookmark name:")..";"..meta["bkmrkname"].."]"
+	formspec=formspec.."label[2,0.5;"..S("Bookmark pos:").." ("..meta["x"]..","..meta["y"]..","..meta["z"]..")]"..
+			"field[2,2;5,0.5;name;"..S("Bookmark name:")..";"..meta["bkmrkname"].."]"
 	minetest.show_formspec(user:get_player_name(), "compassgps:read", formspec)
-  --print("read_from_cgpsmap end")
+	--print("read_from_cgpsmap end")
 end
 
 
@@ -121,7 +121,7 @@ minetest.register_craftitem("compassgps:cgpsmap_marked", {
 			local y=pos.y
 			local z=pos.z
 			if facedir~=nil and itemstack:get_name()=="compassgps:cgpsmap_marked"
-			   and (not minetest.is_protected(pos,placer:get_player_name())) then
+					and (not minetest.is_protected(pos,placer:get_player_name())) then
 				minetest.set_node(pos,{name="compassgps:cgpsmap_wall",param2=facedir})
 				local mapdata = itemstack:get_metadata()
 				local meta=minetest.get_meta(pos)
@@ -149,7 +149,7 @@ minetest.register_craftitem("compassgps:cgpsmap_marked", {
 				e:setyaw(yaw)
 				local dist=math.abs(pos.x-x)+math.abs(pos.y-y)+math.abs(pos.z-z)
 				if growing_wall_maps == false then
-					e:set_properties({visual_size={x=0.85,y=0.85}})									
+					e:set_properties({visual_size={x=0.85,y=0.85}})
 				elseif dist>30000 then
 					e:set_properties({visual_size={x=3.45,y=3.45}})
 				elseif dist>15000 then
@@ -298,17 +298,17 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 				selected_bookmark[playername] = id.index
 			end
 			if fields["write"] then
-        --print("***cgpsmap fields=write***")
+				--print("***cgpsmap fields=write***")
 				if selected_bookmark[playername] == nil then
 					return nil
 				end
-        local bkmrk=textlist_bkmrks[playername][selected_bookmark[playername]]
-        local write = { ["bkmrkname"] = bkmrk.bkmrkname,
-                        x = bkmrk.x,
-                        y = bkmrk.y,
-                        z = bkmrk.z}
-        --print("dump(write)="..dump(write))
-      	selected_cgpsmap[playername]:set_name("compassgps:cgpsmap_marked")
+				local bkmrk=textlist_bkmrks[playername][selected_bookmark[playername]]
+				local write = { ["bkmrkname"] = bkmrk.bkmrkname,
+												x = bkmrk.x,
+												y = bkmrk.y,
+												z = bkmrk.z}
+				--print("dump(write)="..dump(write))
+				selected_cgpsmap[playername]:set_name("compassgps:cgpsmap_marked")
 				selected_cgpsmap[playername]:set_metadata(minetest.serialize(write))
 				player:set_wielded_item(selected_cgpsmap[playername])
 			end
@@ -319,11 +319,11 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			return
 		end
 		if (fields["read"]) then
-      --print("***cgpsmap fields=read***")
+			--print("***cgpsmap fields=read***")
 			local meta = minetest.deserialize(selected_cgpsmap[player:get_player_name()]:get_metadata())
-      --print("dump(meta)="..dump(meta))
-      local bkmrkname = fields["name"]
-      --print("bkmrkname from fields[name]="..bkmrkname)
+			--print("dump(meta)="..dump(meta))
+			local bkmrkname = fields["name"]
+			--print("bkmrkname from fields[name]="..bkmrkname)
 			local pos = {	x = meta["x"] + 0,
 					y = meta["y"] + 0,
 					z = meta["z"] + 0 }
@@ -344,16 +344,16 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		return
 	end
 	if fields["rename"] then
-	      local bkmrkname = fields["name"]
+		local bkmrkname = fields["name"]
 		local meta = minetest.deserialize(selected_cgpsmap[player:get_player_name()]:get_metadata())
 		if meta~=nil and bkmrkname~=nil then
 			local pos = {	x = meta["x"] + 0,
 				y = meta["y"] + 0,
 				z = meta["z"] + 0 }
 			selected_cgpsmap[playername]:set_metadata(minetest.serialize({ ["bkmrkname"] = bkmrkname,
-                        x = pos.x,
-                        y = pos.y,
-                        z = pos.z}))
+					x = pos.x,
+					y = pos.y,
+					z = pos.z}))
 			player:set_wielded_item(selected_cgpsmap[playername]) --new name is saved in marked cpgsmap
 			end
 		end
