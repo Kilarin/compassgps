@@ -7,7 +7,7 @@
 local growing_wall_maps=false
 
 
-local S = minetest.get_translator(minetest.get_current_modname())
+local S = core.get_translator(core.get_current_modname())
 
 
 local selected_cgpsmap = {}
@@ -28,7 +28,7 @@ function write_to_cgpsmap(itemstack, user)
 			default.gui_slots..
 			"button_exit[2,2;5,0.5;write;"..S("Write to cgpsmap").."]"..
 			"textlist[0,3.0;9,6;bookmark_list;"..list..";"..bkmrkidx.."]"
-	minetest.show_formspec(user:get_player_name(), "compassgps:write", formspec)
+	core.show_formspec(user:get_player_name(), "compassgps:write", formspec)
 	--print("write_to_cgpsmap end")
 end
 
@@ -45,24 +45,24 @@ function read_from_cgpsmap(itemstack, user, meta)
 	else
 		itemstack=ItemStack("compassgps:cgpsmap_marked 1")
 		if meta then
-			itemstack:set_metadata(minetest.serialize(meta))
+			itemstack:set_metadata(core.serialize(meta))
 		end
 	end
 	if not meta then  --marked map from creative or /giveme has no meta!
 		meta={bkmrkname="default",x=0,y=0,z=0}
-		itemstack:set_metadata(minetest.serialize(meta))
+		itemstack:set_metadata(core.serialize(meta))
 	end
 	selected_cgpsmap[user:get_player_name()] = itemstack
 
 	formspec=formspec.."label[2,0.5;"..S("Bookmark pos:").." ("..meta["x"]..","..meta["y"]..","..meta["z"]..")]"..
 			"field[2,2;5,0.5;name;"..S("Bookmark name:")..";"..meta["bkmrkname"].."]"
-	minetest.show_formspec(user:get_player_name(), "compassgps:read", formspec)
+	core.show_formspec(user:get_player_name(), "compassgps:read", formspec)
 	--print("read_from_cgpsmap end")
 end
 
 
 
-minetest.register_craft({
+core.register_craft({
 	output = 'compassgps:cgpsmap',
 	recipe = {
 		{'default:paper', '', 'default:paper'},
@@ -71,14 +71,14 @@ minetest.register_craft({
 	}
 })
 
-minetest.register_craft({
+core.register_craft({
 	output = 'compassgps:cgpsmap',
 	recipe = {
 		{'compassgps:cgpsmap_marked'},
 	}
 })
 
-minetest.register_craftitem("compassgps:cgpsmap", {
+core.register_craftitem("compassgps:cgpsmap", {
 	description = S("CompassGPS Map (blank)"),
 	inventory_image = "cgpsmap-blank.png",
 	--groups = {book = 1},
@@ -89,14 +89,14 @@ minetest.register_craftitem("compassgps:cgpsmap", {
 	end
 })
 
-minetest.register_craftitem("compassgps:cgpsmap_marked", {
+core.register_craftitem("compassgps:cgpsmap_marked", {
 	description = "CompassGPS Map (marked)",
 	inventory_image = "cgpsmap-marked.png",
 	groups = {not_in_creative_inventory = 1},
 	stack_max = 1,
 
 	on_use = function(itemstack, user, pointed_thing)
-		local meta = minetest.deserialize(itemstack:get_metadata())
+		local meta = core.deserialize(itemstack:get_metadata())
 		read_from_cgpsmap(itemstack, user, meta)
 		return nil
 	end,
@@ -105,18 +105,18 @@ minetest.register_craftitem("compassgps:cgpsmap_marked", {
 		if pointed_thing.type=="node" and pointed_thing.above then
 			local pos=pointed_thing.above
 			local ppos=placer:getpos()
-			local facedir=minetest.dir_to_facedir(vector.direction(ppos,pointed_thing.under))
+			local facedir=core.dir_to_facedir(vector.direction(ppos,pointed_thing.under))
 			local x=pos.x
 			local y=pos.y
 			local z=pos.z
 			if facedir~=nil and itemstack:get_name()=="compassgps:cgpsmap_marked"
-					and (not minetest.is_protected(pos,placer:get_player_name())) then
-				minetest.set_node(pos,{name="compassgps:cgpsmap_wall",param2=facedir})
+					and (not core.is_protected(pos,placer:get_player_name())) then
+				core.set_node(pos,{name="compassgps:cgpsmap_wall",param2=facedir})
 				local mapdata = itemstack:get_metadata()
-				local meta=minetest.get_meta(pos)
+				local meta=core.get_meta(pos)
 				meta:set_string("mapdata",mapdata)
 				if mapdata~=nil then
-					local data=minetest.deserialize(mapdata)
+					local data=core.deserialize(mapdata)
 					if data~=nil then
 						meta:set_string("infotext", data["bkmrkname"])
 						x=data["x"]
@@ -133,7 +133,7 @@ minetest.register_craftitem("compassgps:cgpsmap_marked", {
 				elseif facedir==2 then
 					pos={x=pos.x,y=pos.y,z=pos.z-0.3}
 				end
-				local e = minetest.add_entity(pos,"compassgps:cgpsmap_item")
+				local e = core.add_entity(pos,"compassgps:cgpsmap_item")
 				local yaw = math.pi*2 - facedir * math.pi/2
 				e:setyaw(yaw)
 				local dist=math.abs(pos.x-x)+math.abs(pos.y-y)+math.abs(pos.z-z)
@@ -162,7 +162,7 @@ minetest.register_craftitem("compassgps:cgpsmap_marked", {
 	end,
 })
 
-minetest.register_node("compassgps:cgpsmap_wall",{
+core.register_node("compassgps:cgpsmap_wall",{
 	description = "CompassGPS Map (wallmounted)",
 	drawtype = "nodebox",
 	node_box = { type = "fixed", fixed = {-0.5, -0.5, 7/16, 0.5, 0.5, 0.5} },
@@ -177,20 +177,20 @@ minetest.register_node("compassgps:cgpsmap_wall",{
 	legacy_wallmounted = true,
 	sounds = default.node_sound_defaults(),
 	on_punch = function(pos,node,puncher)
-		local meta = minetest.get_meta(pos)
+		local meta = core.get_meta(pos)
 		local mapdata=meta:get_string("mapdata")
 
-		if minetest.is_protected(pos,puncher:get_player_name()) then
+		if core.is_protected(pos,puncher:get_player_name()) then
 			--don't take map, instead open formspec to add coordinates in compassgps
 			if mapdata~=nil then
-				read_from_cgpsmap(nil, puncher, minetest.deserialize(mapdata))
+				read_from_cgpsmap(nil, puncher, core.deserialize(mapdata))
 			end
 			return
 		end
 		local inv = puncher:get_inventory()
 
 		local objs = nil
-		objs = minetest.get_objects_inside_radius(pos, .5)
+		objs = core.get_objects_inside_radius(pos, .5)
 		if objs then
 			for _, obj in ipairs(objs) do
 				if obj and obj:get_luaentity() and obj:get_luaentity().name == "compassgps:cgpsmap_item" then
@@ -203,13 +203,13 @@ minetest.register_node("compassgps:cgpsmap_wall",{
 		if inv:room_for_item("main",itemstack) then
 			inv:add_item("main",itemstack)
 		else
-			minetest.add_item(pos, itemstack)
+			core.add_item(pos, itemstack)
 		end
-		minetest.remove_node(pos)
+		core.remove_node(pos)
 	end,
 })
 
-minetest.register_entity("compassgps:cgpsmap_item",{
+core.register_entity("compassgps:cgpsmap_item",{
 	hp_max = 1,
 	visual="wielditem",
 	visual_size={x=0.7,y=0.7},
@@ -218,19 +218,19 @@ minetest.register_entity("compassgps:cgpsmap_item",{
 	textures={"compassgps:cgpsmap_marked"},
 })
 
-minetest.register_abm({
+core.register_abm({
 	nodenames = { "compassgps:cgpsmap_wall" },
 	interval = 600,
 	chance = 1,
 	action = function(pos, node, active_object_count, active_object_count_wider)
-		if #minetest.get_objects_inside_radius(pos, 0.5) > 0 then return end
-		local meta=minetest.get_meta(pos)
+		if #core.get_objects_inside_radius(pos, 0.5) > 0 then return end
+		local meta=core.get_meta(pos)
 		local x=pos.x
 		local y=pos.y
 		local z=pos.z
 		local mapdata=meta:get_string("mapdata",mapdata)
 		if mapdata~=nil then
-			local data=minetest.deserialize(mapdata)
+			local data=core.deserialize(mapdata)
 			if data~=nil then
 				x=data["x"]
 				y=data["y"]
@@ -247,7 +247,7 @@ minetest.register_abm({
 		elseif facedir==2 then
 			pos={x=pos.x,y=pos.y,z=pos.z-0.3}
 		end
-		local e = minetest.add_entity(pos,"compassgps:cgpsmap_item")
+		local e = core.add_entity(pos,"compassgps:cgpsmap_item")
 		local yaw = math.pi*2 - facedir * math.pi/2
 		e:setyaw(yaw)
 		local dist=math.abs(pos.x-x)+math.abs(pos.y-y)+math.abs(pos.z-z)
@@ -271,7 +271,7 @@ minetest.register_abm({
 })
 
 
-minetest.register_on_player_receive_fields(function(player, formname, fields)
+core.register_on_player_receive_fields(function(player, formname, fields)
 	if (formname == "compassgps:write") then
 		if not player then
 			return
@@ -283,7 +283,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			end
 			if fields["bookmark_list"] then
 				-- to get the currently selected
-				local id = minetest.explode_textlist_event(fields["bookmark_list"])
+				local id = core.explode_textlist_event(fields["bookmark_list"])
 				selected_bookmark[playername] = id.index
 			end
 			if fields["write"] then
@@ -298,7 +298,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 												z = bkmrk.z}
 				--print("dump(write)="..dump(write))
 				selected_cgpsmap[playername]:set_name("compassgps:cgpsmap_marked")
-				selected_cgpsmap[playername]:set_metadata(minetest.serialize(write))
+				selected_cgpsmap[playername]:set_metadata(core.serialize(write))
 				player:set_wielded_item(selected_cgpsmap[playername])
 			end
 		end
@@ -309,7 +309,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		end
 		if (fields["read"]) then
 			--print("***cgpsmap fields=read***")
-			local meta = minetest.deserialize(selected_cgpsmap[player:get_player_name()]:get_metadata())
+			local meta = core.deserialize(selected_cgpsmap[player:get_player_name()]:get_metadata())
 			--print("dump(meta)="..dump(meta))
 			local bkmrkname = fields["name"]
 			--print("bkmrkname from fields[name]="..bkmrkname)
@@ -334,12 +334,12 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	end
 	if fields["rename"] then
 		local bkmrkname = fields["name"]
-		local meta = minetest.deserialize(selected_cgpsmap[player:get_player_name()]:get_metadata())
+		local meta = core.deserialize(selected_cgpsmap[player:get_player_name()]:get_metadata())
 		if meta~=nil and bkmrkname~=nil then
 			local pos = {	x = meta["x"] + 0,
 				y = meta["y"] + 0,
 				z = meta["z"] + 0 }
-			selected_cgpsmap[playername]:set_metadata(minetest.serialize({ ["bkmrkname"] = bkmrkname,
+			selected_cgpsmap[playername]:set_metadata(core.serialize({ ["bkmrkname"] = bkmrkname,
 					x = pos.x,
 					y = pos.y,
 					z = pos.z}))

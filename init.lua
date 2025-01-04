@@ -14,7 +14,7 @@
 --added pos and distance to display list
 --added hud showing current pos -> target pos : distance
 
-local S = minetest.get_translator(minetest.get_current_modname())
+local S = core.get_translator(core.get_current_modname())
 
 local hud_default_x=0.4
 local hud_default_y=0.01
@@ -27,9 +27,9 @@ local show_shared_on_singleplayer=false --show shared and admin checkboxes on si
 --the ONLY reason to change this variable to true is for testing.  shared and admin bookmarks
 --make no sense in a single player game.
 
-minetest.register_privilege("shared_bookmarks",
+core.register_privilege("shared_bookmarks",
 	S("Can create shared bookmarks for use by anyone with a compassgps"))
---minetest.register_privilege("shared_bookmarks", {
+--core.register_privilege("shared_bookmarks", {
 --	description = "Can create shared bookmarks for use by anyone with a compassgps",
 --	give_to_singleplayer = false,})
 
@@ -56,14 +56,14 @@ local backwardscompatsave = "NO"
 
 
 print(S("compassgps reading bookmarks"))
-local file = io.open(minetest.get_worldpath().."/bookmarks", "r")
+local file = io.open(core.get_worldpath().."/bookmarks", "r")
 if file then
-	bookmarks = minetest.deserialize(file:read("*all"))
+	bookmarks = core.deserialize(file:read("*all"))
 	-- check if it was an empty file because empty files can crash server
 	if bookmarks == nil then
 		print("compassgps:ERROR:bookmarks file exists but is empty, will recreate")
 		print("compassgps: this will stop the server from crashing, but bookmarks are lost")
-		print("compassgps: please restore "..minetest.get_worldpath().."/bookmarks from a backup if possible")
+		print("compassgps: please restore "..core.get_worldpath().."/bookmarks from a backup if possible")
 		bookmarks = { }
 	end
 	file:close()
@@ -129,16 +129,16 @@ end --distance3d
 
 -- **********************************************************
 print(S("compassgps reading settings"))
-if minetest.is_singleplayer() and show_shared_on_singleplayer==false then
+if core.is_singleplayer() and show_shared_on_singleplayer==false then
 	singleplayer=true
 else
 	singleplayer=false
 end
 
 local settings = { }
-local file = io.open(minetest.get_worldpath().."/compassgps_settings", "r")
+local file = io.open(core.get_worldpath().."/compassgps_settings", "r")
 if file then
-	settings = minetest.deserialize(file:read("*all"))
+	settings = core.deserialize(file:read("*all"))
 	-- check if it was an empty file because empty files can crash server
 	if settings == nil then
 		print("compassgps:ERROR:compassgps_setting file exists but is empty, will recreate")
@@ -260,7 +260,7 @@ end--count_shared
 --mode "M" similar to "L" but with current position (for maps)
 function compassgps.bookmark_loop(mode,playername,findidx)
 	--print("bookmark_loop top")
-	local player = minetest.get_player_by_name(playername)
+	local player = core.get_player_by_name(playername)
 	local playerpos = player:getpos()
 	local list=""
 	local bkmrkidx=1
@@ -349,8 +349,8 @@ function compassgps.bookmark_loop(mode,playername,findidx)
 				textlist_bkmrks[playername][i]=v
 				--print("bookmark_loop P "..i.." "..compassgps.bookmark_to_string(textlist_bkmrks[playername][i]))
 			elseif mode=="C" then
-				--minetest.chat_send_player(playername, vbkmrkname..": "..compassgps.pos_to_string(v))
-				minetest.chat_send_player(playername, compassgps.bookmark_name_pos_dist(v,playername,playerpos))
+				--core.chat_send_player(playername, vbkmrkname..": "..compassgps.pos_to_string(v))
+				core.chat_send_player(playername, compassgps.bookmark_name_pos_dist(v,playername,playerpos))
 			end
 		end --if vtype
 
@@ -390,7 +390,7 @@ end --bookmark_loop
 
 function compassgps.get_confirm_formspec(playername,bkmrkidx)
 	--print("get_confirm_remove_formspec")
-	local player = minetest.get_player_by_name(playername)
+	local player = core.get_player_by_name(playername)
 	if not compassgps.verify_bookmark_parms("remove_bookmark",player,playername,bkmrkidx)
 		then return end
 	local bkmrk=textlist_bkmrks[playername][bkmrkidx]
@@ -428,7 +428,7 @@ end --check_view_type_all_blank
 
 
 
-minetest.register_on_player_receive_fields(function(player,formname,fields)
+core.register_on_player_receive_fields(function(player,formname,fields)
 	if (not player) then
 		return false;
 	end
@@ -459,16 +459,16 @@ minetest.register_on_player_receive_fields(function(player,formname,fields)
 				type="A"
 			end --shared or admin
 			compassgps.set_bookmark(playername, fields["bookmark"],type)
-			minetest.show_formspec(playername, compassgps.get_compassgps_formspec(playername))
+			core.show_formspec(playername, compassgps.get_compassgps_formspec(playername))
 		elseif fields["remove_bookmark"] and textlist_clicked[playername] then
 			local bkmrkidx=textlist_clicked[playername]
 			if textlist_bkmrks[playername][bkmrkidx].player ~= playername then
 				--only admins can delete someone elses shared bookmark
 				--check to see if the player has "privs" privliges
 				local player_privs
-				player_privs = minetest.get_player_privs(playername)
+				player_privs = core.get_player_privs(playername)
 				if not player_privs["privs"] then
-					minetest.chat_send_player(playername,S("you can not remove someone elses bookmark:")..
+					core.chat_send_player(playername,S("you can not remove someone elses bookmark:")..
 							compassgps.bookmark_name_string(textlist_bkmrks[playername][bkmrkidx]))
 					return
 				end --if not player_privs
@@ -483,7 +483,7 @@ minetest.register_on_player_receive_fields(function(player,formname,fields)
 	end
 
 			--if they got here, they have authority to del the bookmark, show confirm dialog
-			minetest.show_formspec(playername, compassgps.get_confirm_formspec(playername, bkmrkidx))
+			core.show_formspec(playername, compassgps.get_confirm_formspec(playername, bkmrkidx))
 		elseif fields["find_bookmark"] and textlist_clicked[playername] then
 			--print("compassgps.fields find_bookmark triggered, playername="..playername.." textlist_clicked="..textlist_clicked[playername])
 			compassgps.find_bookmark(playername,textlist_clicked[playername])
@@ -500,7 +500,7 @@ minetest.register_on_player_receive_fields(function(player,formname,fields)
 			else
 				sort_function[playername]=compassgps.sort_by_distance
 			end --if name else distance
-			minetest.show_formspec(playername, compassgps.get_compassgps_formspec(playername))
+			core.show_formspec(playername, compassgps.get_compassgps_formspec(playername))
 		elseif fields["distance_type"] then
 			local idx=tonumber(string.sub(fields["distance_type"],5))
 			if idx==1 then
@@ -508,44 +508,44 @@ minetest.register_on_player_receive_fields(function(player,formname,fields)
 			else
 				distance_function[playername]=compassgps.distance2d
 			end --if 2d else 3d
-			minetest.show_formspec(playername, compassgps.get_compassgps_formspec(playername))
+			core.show_formspec(playername, compassgps.get_compassgps_formspec(playername))
 		elseif fields["show_private"] then
 			view_type_P[playername]=tostring(fields["show_private"])
 			compassgps.check_view_type_all_blank(playername)
-			minetest.show_formspec(playername, compassgps.get_compassgps_formspec(playername))
+			core.show_formspec(playername, compassgps.get_compassgps_formspec(playername))
 		elseif fields["show_shared"] then
 			view_type_S[playername]=tostring(fields["show_shared"])
 			compassgps.check_view_type_all_blank(playername)
-			minetest.show_formspec(playername, compassgps.get_compassgps_formspec(playername))
+			core.show_formspec(playername, compassgps.get_compassgps_formspec(playername))
 		elseif fields["show_admin"] then
 			view_type_A[playername]=tostring(fields["show_admin"])
 			compassgps.check_view_type_all_blank(playername)
-			minetest.show_formspec(playername, compassgps.get_compassgps_formspec(playername))
+			core.show_formspec(playername, compassgps.get_compassgps_formspec(playername))
 		elseif fields["teleport"] then
 			-- Teleport player.
 			compassgps.teleport_bookmark(playername, textlist_clicked[playername])
 		elseif fields["settings"] then
 			--bring up settings screen
-			minetest.show_formspec(playername, compassgps.get_settings_formspec(playername))
+			core.show_formspec(playername, compassgps.get_settings_formspec(playername))
 		end --compassgps formspec
 	elseif (playername ~= "" and formname == "compassgps:settings") then
 		if fields["hud_pos"] then --and fields["hudx"] and fields["hudy"] then
-			--minetest.chat_send_all("hud_pos triggered")
+			--core.chat_send_all("hud_pos triggered")
 			if tonumber(fields["hudx"]) and tonumber(fields["hudy"]) then
 				hud_pos[playername].x=fields["hudx"]
 				hud_pos[playername].y=fields["hudy"]
 				if tonumber(hud_pos[playername].x)<0 or tonumber(hud_pos[playername].x)>1
 						or tonumber(hud_pos[playername].y)<0 or tonumber(hud_pos[playername].y)>1 then
-				minetest.chat_send_player(playername,S("compassgps: hud coords out of range, hud will not be displayed.  Change to between 0 and 1 to restore"))
+				core.chat_send_player(playername,S("compassgps: hud coords out of range, hud will not be displayed.  Change to between 0 and 1 to restore"))
 				--compassgps.write_settings() --no need to save until you quit
 				end
 			else --not numbers
-				minetest.chat_send_player(playername,S("compassgps: hud coords are not numeric.  Change to between 0 and 1"))
+				core.chat_send_player(playername,S("compassgps: hud coords are not numeric.  Change to between 0 and 1"))
 			end --if x,y valid
 			if tonumber(fields["hudcolor"],16) then
 				hud_color[playername]=fields["hudcolor"]
 			else
-				minetest.chat_send_player(playername,S("compassgps: hud color not valid hex number"))
+				core.chat_send_player(playername,S("compassgps: hud color not valid hex number"))
 			end --if color valid
 		elseif fields["compass_type_a"] then
 			compass_type[playername]="a"
@@ -557,9 +557,9 @@ minetest.register_on_player_receive_fields(function(player,formname,fields)
 	elseif (playername ~= "" and formname == "compassgps:confirm_remove") then
 		if fields["confirm_remove_yes"] then
 			compassgps.remove_bookmark(playername, textlist_clicked[playername])
-			minetest.show_formspec(playername, compassgps.get_compassgps_formspec(playername))
+			core.show_formspec(playername, compassgps.get_compassgps_formspec(playername))
 		elseif fields["confirm_remove_no"] then
-			minetest.show_formspec(playername, compassgps.get_compassgps_formspec(playername))
+			core.show_formspec(playername, compassgps.get_compassgps_formspec(playername))
 		end -- if fields["confirm_remove_yes"]
 	end -- form if
 end)
@@ -567,9 +567,9 @@ end)
 
 --saves the bookmark list in minetest/words/<worldname>/bookmarks
 function compassgps.write_bookmarks()
-	local file = io.open(minetest.get_worldpath().."/bookmarks", "w")
+	local file = io.open(core.get_worldpath().."/bookmarks", "w")
 	if file then
-		file:write(minetest.serialize(bookmarks))
+		file:write(core.serialize(bookmarks))
 		file:close()
 	end
 end --write_bookmarks
@@ -580,7 +580,7 @@ function compassgps.write_settings()
 	--loop through players and set settings
 	--(less error prone than trying to keep settings in sync all the time
 	print(S("compassgps writing settings"))
-	local players  = minetest.get_connected_players()
+	local players  = core.get_connected_players()
 	for i,player in ipairs(players) do
 		local name = player:get_player_name();
 		local sort_short="name"
@@ -604,19 +604,19 @@ function compassgps.write_settings()
 										view_type_A=view_type_A[name]}
 	end
 	--now write to file
-	local file = io.open(minetest.get_worldpath().."/compassgps_settings", "w")
+	local file = io.open(core.get_worldpath().."/compassgps_settings", "w")
 	if file then
-		file:write(minetest.serialize(settings))
+		file:write(core.serialize(settings))
 		file:close()
 	end
 end --write_settings
 
 
-minetest.register_on_leaveplayer(function(player)
+core.register_on_leaveplayer(function(player)
 	compassgps.write_settings()
 	end)
 
-minetest.register_on_shutdown(compassgps.write_settings)
+core.register_on_shutdown(compassgps.write_settings)
 
 
 function compassgps.clean_string(str)
@@ -633,7 +633,7 @@ end --clean_string
 
 
 function compassgps.set_bookmark(playername, bkmrkname, type, predefinedpos)
-	local player = minetest.get_player_by_name(playername)
+	local player = core.get_player_by_name(playername)
 	if not player then
 		return
 	end
@@ -648,24 +648,24 @@ function compassgps.set_bookmark(playername, bkmrkname, type, predefinedpos)
 	bkmrkname=compassgps.clean_string(bkmrkname)
 
 	if bkmrkname == "" then
-		minetest.chat_send_player(playername, S("Give the bookmark a name."))
+		core.chat_send_player(playername, S("Give the bookmark a name."))
 		return
 	end
 	if bkmrkname == "default" or bkmrkname == "bed" or bkmrkname == "sethome"
 			or string.sub(bkmrkname,1,8) == "*shared*"
 			or string.sub(bkmrkname,1,7)=="*admin*" then
-		minetest.chat_send_player(playername, S("A bookmark with the name '%s' can't be created."):format(bkmrkname))
+		core.chat_send_player(playername, S("A bookmark with the name '%s' can't be created."):format(bkmrkname))
 		return
 	end
 	if bookmarks[playername..bkmrkname] then
-		minetest.chat_send_player(playername, S("You already have a bookmark with that name."))
+		core.chat_send_player(playername, S("You already have a bookmark with that name."))
 		return
 	end
 
 	pos.type=type or "P" --Private Shared Admin
 
 	if pos.type=="S" and compassgps.count_shared(playername) >= max_shared then
-		minetest.chat_send_player(playername, S("The maximum number of shared bookmarks any user can create is %d."):format(max_shared))
+		core.chat_send_player(playername, S("The maximum number of shared bookmarks any user can create is %d."):format(max_shared))
 		return
 	end
 
@@ -675,11 +675,11 @@ function compassgps.set_bookmark(playername, bkmrkname, type, predefinedpos)
 	bookmarks[playername..bkmrkname] = pos
 
 	compassgps.write_bookmarks()
-	minetest.chat_send_player(playername, S("Bookmark '%s' added at %s type=%s"):format(bkmrkname, compassgps.pos_to_string(pos), pos.type))
+	core.chat_send_player(playername, S("Bookmark '%s' added at %s type=%s"):format(bkmrkname, compassgps.pos_to_string(pos), pos.type))
 end
 
 
-minetest.register_chatcommand("set_bookmark", {
+core.register_chatcommand("set_bookmark", {
 	params = "<bookmark_name>",
 	description = S("set_bookmark: Sets a location bookmark for the player"),
 	func = function (playername, bkmrkname)
@@ -725,7 +725,7 @@ end --pos_to_string
 
 
 
-minetest.register_chatcommand("list_bookmarks", {
+core.register_chatcommand("list_bookmarks", {
 	params = "",
 	description = S("list_bookmarks: Lists all bookmarks of a player"),
 	func = function(name, param)
@@ -752,7 +752,7 @@ function compassgps.verify_bookmark_parms(from_function,player,playername,bkmrki
 	end --if not tonumber(bkmrkidx)
 	if not textlist_bkmrks[playername][bkmrkidx] then
 		print(S("compassgps.%s invalid bookmark playername=%s bkmrkid=%s"):format(from_function, playername, bkmrkidx))
-		minetest.chat_send_player(playername,S("compassgps:%s invalid bookmark"):format(from_function))
+		core.chat_send_player(playername,S("compassgps:%s invalid bookmark"):format(from_function))
 		return false
 	end   --if not textlist_bkmrks
 	return true --if you got here it is all good
@@ -761,14 +761,14 @@ end --verify_bookmark_parms
 
 
 function compassgps.remove_bookmark(playername, bkmrkidx)
-	local player = minetest.get_player_by_name(playername)
+	local player = core.get_player_by_name(playername)
 	if not compassgps.verify_bookmark_parms("remove_bookmark",player,playername,bkmrkidx)
 		then return end
 
 
 
 	print(S("remove bookmark playername=%s bkmrkidx=%s"):format(playername, bkmrkidx))
-	minetest.chat_send_player(playername, S("removed %s"):format(
+	core.chat_send_player(playername, S("removed %s"):format(
 			compassgps.bookmark_name_string(textlist_bkmrks[playername][bkmrkidx])))
 	bookmarks[textlist_bkmrks[playername][bkmrkidx].player..
 			textlist_bkmrks[playername][bkmrkidx].bkmrkname] = nil
@@ -778,26 +778,26 @@ end --remove_bookmarks
 
 
 function compassgps.remove_bookmark_byname(playername, bkmrkname)
-	local player = minetest.get_player_by_name(playername)
+	local player = core.get_player_by_name(playername)
 	if not player then
 		return
 	end
 	if bkmrkname == "" then
-		minetest.chat_send_player(name, S("No bookmark was specified."))
+		core.chat_send_player(name, S("No bookmark was specified."))
 		return
 	end
 	if not bookmarks[playername..bkmrkname] then
-		minetest.chat_send_player(playername, S("You have no bookmark with this name."))
+		core.chat_send_player(playername, S("You have no bookmark with this name."))
 		return
 	end
 	bookmarks[playername..bkmrkname] = nil
 	compassgps.write_bookmarks()
-	minetest.chat_send_player(playername, S("The bookmark "..bkmrkname.." has been successfully removed."))
+	core.chat_send_player(playername, S("The bookmark "..bkmrkname.." has been successfully removed."))
 end
 
 
 
-minetest.register_chatcommand("remove_bookmark", {
+core.register_chatcommand("remove_bookmark", {
 	params = "<bookmark_name>",
 	description = S("Removes the bookmark specified by <bookmark_name>"),
 	func = function(name, bkmrkname)
@@ -807,12 +807,12 @@ minetest.register_chatcommand("remove_bookmark", {
 
 
 function compassgps.teleport_bookmark(playername, bkmrkidx)
-	local player = minetest.get_player_by_name(playername)
+	local player = core.get_player_by_name(playername)
 	if not compassgps.verify_bookmark_parms("teleport_bookmark",player,playername,bkmrkidx)
 			then return end
 	print(S("compassgps teleporting player %s to %s"):format(playername,
 			compassgps.bookmark_name_string(textlist_bkmrks[playername][bkmrkidx])))
-	minetest.chat_send_player(playername, S("Teleporting to %s"):format(
+	core.chat_send_player(playername, S("Teleporting to %s"):format(
 			compassgps.bookmark_name_string(textlist_bkmrks[playername][bkmrkidx])))
 	player:setpos(textlist_bkmrks[playername][bkmrkidx])
 end --teleport_bookmark
@@ -820,39 +820,39 @@ end --teleport_bookmark
 
 
 function compassgps.find_bookmark_byname(playername, bkmrkname)
-	local player = minetest.get_player_by_name(playername)
+	local player = core.get_player_by_name(playername)
 	if not player then
 		return
 	end
 	if not bkmrkname or bkmrkname == "" then
-		minetest.chat_send_player(playername, S("No bookmark was specified."))
+		core.chat_send_player(playername, S("No bookmark was specified."))
 		return
 	end
 	if bkmrkname == "default" then
-		minetest.chat_send_player(playername, S("Pointing at default location."))
+		core.chat_send_player(playername, S("Pointing at default location."))
 		point_to[playername] = compassgps.get_default_bookmark(playername,1)
 		return
 	end
 	if not bookmarks[playername..bkmrkname] then
-		minetest.chat_send_player(playername, S("You have no bookmark with this name."))
+		core.chat_send_player(playername, S("You have no bookmark with this name."))
 		return
 	end
 	point_to[playername] = bookmarks[playername..bkmrkname]
-	minetest.chat_send_player(playername, S("Pointing at %s."):format(bkmrkname))
+	core.chat_send_player(playername, S("Pointing at %s."):format(bkmrkname))
 end
 
 
 
 function compassgps.find_bookmark(playername, bkmrkidx)
-	local player = minetest.get_player_by_name(playername)
+	local player = core.get_player_by_name(playername)
 	if not compassgps.verify_bookmark_parms("find_bookmark",player,playername,bkmrkidx)
 			then return end
 	point_to[playername] = textlist_bkmrks[playername][bkmrkidx]
-	minetest.chat_send_player(playername, S("Pointing at %s."):format(point_to[playername].bkmrkname))
+	core.chat_send_player(playername, S("Pointing at %s."):format(point_to[playername].bkmrkname))
 end
 
 
-minetest.register_chatcommand("find_bookmark", {
+core.register_chatcommand("find_bookmark", {
 	params = "<bookmark_name>",
 	description = S("Lets the compassgps point to the bookmark"),
 	func = function(playername, bkmrkname)
@@ -870,7 +870,7 @@ minetest.register_chatcommand("find_bookmark", {
 
 
 -- default to static spawnpoint
-local static_spawnpoint = minetest.setting_get_pos("static_spawnpoint")
+local static_spawnpoint = core.setting_get_pos("static_spawnpoint")
 -- default to 0/0/0 if spawnpoint is not present or invalid
 local default_spawn = static_spawnpoint or {x=0, y=0, z=0}
 
@@ -879,7 +879,7 @@ local beds_spawns = {}
 local sethome_spawns = {}
 function read_spawns()
 	-- read BlockMen beds-mod positions (added to default minetest game)
-	local beds_file = io.open(minetest.get_worldpath().."/beds_spawns", "r")
+	local beds_file = io.open(core.get_worldpath().."/beds_spawns", "r")
 	if beds_file then
 		while true do
 			local x = beds_file:read("*n")
@@ -894,16 +894,16 @@ function read_spawns()
 		io.close(beds_file)
 	else
 	-- read PilzAdams beds-mod positions
-	beds_file = io.open(minetest.get_worldpath().."/beds_player_spawns", "r")
+	beds_file = io.open(core.get_worldpath().."/beds_player_spawns", "r")
 		if beds_file then
-			beds_spawns = minetest.deserialize(beds_file:read("*all"))
+			beds_spawns = core.deserialize(beds_file:read("*all"))
 			beds_file:close()
 		end
 	end
 
 	-- read sethome-mod positions
-	if minetest.get_modpath('sethome') then
-		local sethome_file = io.open(minetest.get_modpath('sethome')..'/homes', "r")
+	if core.get_modpath('sethome') then
+		local sethome_file = io.open(core.get_modpath('sethome')..'/homes', "r")
 		if sethome_file then
 			while true do
 				local x = sethome_file:read("*n")
@@ -988,12 +988,12 @@ end --get_compassgps_target_pos
 
 
 
-minetest.register_globalstep(function(dtime)
+core.register_globalstep(function(dtime)
 	if last_time_spawns_read ~= os.date("%M") then
 		last_time_spawns_read = os.date("%M")
 		read_spawns()
 	end
-	local players  = minetest.get_connected_players()
+	local players  = core.get_connected_players()
 	for i,player in ipairs(players) do
 		local playername = player:get_player_name();
 
@@ -1164,7 +1164,7 @@ end--spairs
 
 
 function compassgps.get_compassgps_formspec(name)
-	local player = minetest.get_player_by_name(name)
+	local player = core.get_player_by_name(name)
 	local playerpos = player:getpos()
 	--print("get_compassgps_formspec spawn="..compassgps.pos_to_string(store_spawn[name]))
 	--local list = "default "..compassgps.pos_to_string(compassgps.get_default_pos_and_name(name))
@@ -1203,7 +1203,7 @@ function compassgps.get_compassgps_formspec(name)
 	--check to see if the player has teleport privliges
 	local player_privs
 	if core then player_privs = core.get_player_privs(name)
-	else player_privs = minetest.get_player_privs(name)
+	else player_privs = core.get_player_privs(name)
 	end
 	local telebutton=""
 	if player_privs["teleport"] then
@@ -1250,7 +1250,7 @@ end --get_compassgps_formspec
 
 
 function compassgps.get_settings_formspec(name)
-	local player = minetest.get_player_by_name(name)
+	local player = core.get_player_by_name(name)
 
 	return "compassgps:settings", "size[8,4;]"..
 		default.gui_bg..
@@ -1283,14 +1283,14 @@ for i=1,12 do
 		ctypename=compassgps.compass_type_name("",(i-1),ctype)
 		img="compass_"..ctypename..".png"
 		--print("registering compassgps:"..ctypename.." img="..img)
-		minetest.register_tool("compassgps:"..ctypename, {
+		core.register_tool("compassgps:"..ctypename, {
 			description = S("compassgps"),
 			inventory_image = img,
 			wield_image = img, --.."^[transformR90"  didn't work
 			on_use = function (itemstack, user, pointed_thing)
 					local name = user:get_player_name()
 					if (name ~= "") then
-						minetest.show_formspec(name, compassgps.get_compassgps_formspec(name))
+						core.show_formspec(name, compassgps.get_compassgps_formspec(name))
 					end
 				end,
 			groups = {not_in_creative_inventory=inv}
@@ -1298,7 +1298,7 @@ for i=1,12 do
 	end --for ctype
 end --for i,img
 
-minetest.register_craft({
+core.register_craft({
 	output = 'compassgps:0',
 	recipe = {
 		{'', 'default:steel_ingot', ''},
@@ -1307,7 +1307,7 @@ minetest.register_craft({
 	}
 })
 
-dofile(minetest.get_modpath("compassgps").."/cgpsmap.lua")
+dofile(core.get_modpath("compassgps").."/cgpsmap.lua")
 
 
 
