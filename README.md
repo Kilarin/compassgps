@@ -8,10 +8,10 @@ TeTpaAka's gui, file io, and coding for multiplayer games was simply amazing.  B
 
 
 **Previous Forks**<br/>
-* Echo created a compass mod back in 2012: [https://forum.minetest.net/viewtopic.php?id=3785](https://forum.minetest.net/viewtopic.php?id=3785)
+* Echo created a compass mod back in 2012: [https://forum.luanti.org/viewtopic.php?id=3785](https://forum.luanti.org/viewtopic.php?id=3785)
   * Echo managed to make the compass in your inventory actually change it's image to point in the direction of it's target.
 * PilzAdam's fork was lost, and the amount of code that merged back into Echo's is unknown.<br/>
-* TeTpaAka made a fork (2013) of the compass mod called compass+ [https://forum.minetest.net/viewtopic.php?id=8117](https://forum.minetest.net/viewtopic.php?id=8117)
+* TeTpaAka made a fork (2013) of the compass mod called compass+ [https://forum.luanti.org/viewtopic.php?id=8117](https://forum.luanti.org/viewtopic.php?id=8117)
   * added bookmarks via chat commands
   * added some type of GUI, file IO, and multiplayer considerations
 * Kilarin fork adds the ability to bookmark named targets, and a GUI so you could choose the compass' target:
@@ -149,7 +149,7 @@ OR, simply install it directly from minetest using the online mod repository.
 
 **Mod Database:**<p>
 If you use this mod, please consider reviewing it on the MineTest Mod Database.<p>
-[https://forum.minetest.net/mmdb/mod/compassgps/](https://forum.minetest.net/mmdb/mod/compassgps/)
+[https://forum.luanti.org/mmdb/mod/compassgps/](https://forum.luanti.org/mmdb/mod/compassgps/)
 
 **Changelog:**<p>
 2.7 fork 1 HUD fixes
